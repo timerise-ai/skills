@@ -5,6 +5,25 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-09-02
+
+### Changed
+
+- `STANDARD.md` section 2 gains "Say what the templates guarantee, not what
+  broke": the README intro, the `SKILL.md` framing paragraph, the frontmatter
+  description and `CLAUDE.md` describe a module by the properties it holds,
+  stated as what the build and the tests verify. No defect counts, no story
+  of what went wrong in the earlier implementation, no "cannot recur". The
+  record of the audit stays in `provenance.md`, linked and not summarised.
+  The hard rules and the non-negotiables state the rule, the reason it holds
+  and what verifies it. Sections 1, 6 and 8 follow.
+- `README.md`: the intro, the provenance row, the "Earned, not invented"
+  property, the non-negotiables property and the Contributing section are in
+  the same words.
+- The skills table: blog-markdown 0.1.5, booking-kiosk 0.1.4, digital-signage
+  0.1.6, help-center-markdown 0.2.8, island-mode-server 0.1.4, ksef 1.2.4,
+  stripe-connect-subscriptions 0.1.7, released under that rule.
+
 ## [0.7.0] - 2026-09-02
 
 ### Changed
@@ -262,6 +281,7 @@ Initial published version of the Timerise skills index.
 - MIT License.
 - Note that more skills are published as each module stabilises.
 
+[0.8.0]: https://github.com/timerise-ai/skills/releases/tag/v0.8.0
 [0.7.0]: https://github.com/timerise-ai/skills/releases/tag/v0.7.0
 [0.6.2]: https://github.com/timerise-ai/skills/releases/tag/v0.6.2
 [0.6.1]: https://github.com/timerise-ai/skills/releases/tag/v0.6.1

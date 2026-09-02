@@ -7,9 +7,9 @@ release. It is written for the engineer building a skill, and for an agent asked
 ## 1. What a skill is
 
 A skill teaches an agent to build **one production-grade module** for a **Next.js App Router** app, on the
-host app's own stack, with the defects our engineers have learned to design out already engineered out. It is
-one repository under `github.com/timerise-ai`, in the open [Agent Skills](https://agentskills.io) format, so
-the same folder works in Claude Code, Codex CLI, Gemini CLI and any other skills-compatible agent.
+host app's own stack, the way our engineers build it after shipping it many times. It is one repository
+under `github.com/timerise-ai`, in the open [Agent Skills](https://agentskills.io) format, so the same folder
+works in Claude Code, Codex CLI, Gemini CLI and any other skills-compatible agent.
 
 - **One module per skill.** A blog, a help center, a kiosk, a signage system, a settlement flow, an
   e-invoicing integration, a fallback server. Not a framework, not a starter kit, not a grab bag.
@@ -35,6 +35,14 @@ in the repository has to read that way, to a person and to a tool summarising it
   shipped it, and names the kind of module it is: a marketing-site blog, a venue kiosk, a marketplace
   settlement flow. Where the skill reports an audit or a measurement, call the thing it was checked against
   **the earlier implementation**, in the singular, without saying whose it was.
+- **Say what the templates guarantee, not what broke.** The README intro, the `SKILL.md` framing paragraph,
+  the frontmatter description and `CLAUDE.md` describe the module by the properties it holds: every article
+  reachable from the sidebar, from search and from an untranslated locale; one file read per post per build;
+  a booking priced on the server. They do not count defects, tell what went wrong in the earlier
+  implementation, call anything silent or broken, or say the templates exist so that something "cannot
+  recur". Each property is stated as what the build and the tests verify. The record of what the audit
+  changed lives in `provenance.md`, linked from the front door and not summarised there. The same applies to
+  the hard rules and the non-negotiables: the rule, then the reason it holds, without the anecdote.
 - **Never identify a system.** No customer, project, brand, domain, industry detail or combination of
   figures that would let a reader work out which deployment the earlier implementation was. A scale figure
   is allowed when it explains a design decision and identifies nothing: "three locales" does, a post count
@@ -42,21 +50,22 @@ in the repository has to read that way, to a person and to a tool summarising it
 - **Banned words.** "Extracted", "extraction", "ported from", "lifted from", "taken from". "The source",
   "the source app", "the source module", "the source repo", "the original module". "Production-tested",
   "production-audited", "battle-tested", "running in production at". Say what the skill carries instead:
-  "hardened against the defects the audit found", "measured on the earlier implementation", "the rule that
+  "verified by the build and the tests", "measured on the earlier implementation", "the rule that
   survived three rebuilds". This applies to the `description` in the `SKILL.md` frontmatter as much as to
   the prose: the description is the sentence most often quoted back.
 - **Do not deny.** State what the skill is. Never write sentences of the form "not taken from a customer",
   "no customer code": a denial reads as defensive and raises the question it answers.
-- **Separate three things in `provenance.md`:** what the audit found and the templates fix, what was kept
-  deliberately with the reason it is safe, and what was designed in the skill and has never run in
-  production. The skill's credibility is that it distinguishes them.
+- **Separate three things in `provenance.md`:** what the audit changed and how the templates verify it,
+  what was kept deliberately with the reason it is safe, and what was designed in the skill and has never
+  run in production. The skill's credibility is that it distinguishes them. `provenance.md` is an engineering
+  ledger for the person editing the skill, not a story for the reader of the README.
 - **No corpus figures.** How many articles, posts, files, tags, locales, screens or sellers the earlier
   implementation had, and ratios such as "25 of 45 links", do not appear anywhere: they describe one
   deployment, together they fingerprint it, and none of them changes how the next implementation is built.
   Say the shape instead: "half a category", "most translated posts", "a two-word tag with and without a
   hyphen". Numbers that stay are the ones the next implementation needs: design parameters (a 200-item
   cap, a 15-minute TTL, a 32 px touch target), vendor and API facts, the skill's own test and fixture
-  counts, and the count of defects in the ledger. A single measured magnitude that argues for a rule, such
+  counts, and the ledger's own entry count inside `provenance.md`. A single measured magnitude that argues for a rule, such
   as a 71x read amplification, may stay as that one figure without the corpus behind it. Do not restate a
   number loosely and do not invent new ones.
 - **Every claim is verifiable.** If a fact about a library, an API or a status code changes, say how it was
@@ -134,8 +143,9 @@ Sections in this order; optional ones are marked.
 2. **Badges**, one line each: Agent Skills open format, skills.sh `npx skills add`, Claude Code compatible,
    Codex CLI compatible, Gemini CLI compatible. Copy them from an existing skill.
 3. **Intro**: one paragraph stating what the skill teaches an agent to build and for which framework; one
-   paragraph with the insight the whole design turns on, in bold; one paragraph on origin and audit in the
-   words of section 2, linking `references/provenance.md`.
+   paragraph with the insight the whole design turns on, in bold; one paragraph on origin in the words of
+   section 2: who wrote it, the kind of module the earlier implementation was, and the properties the
+   templates verify, linking `references/provenance.md` for the record.
 4. `## Install`: the one-command install first, `npx skills add timerise-ai/<name>`, with the `-a` form for
    named agents. Then `### Manual install`: the clone for Claude Code, the project-scoped clone, the symlink
    for other agents, `git pull` to update, and the line `The current release is **X.Y.Z**. See
@@ -145,8 +155,8 @@ Sections in this order; optional ones are marked.
    that each host matches its own way and that a first run should invoke explicitly.
 6. `## What's inside`: the file table, one row per file in the repository, then a paragraph on where the
    seam lives and what it bounds.
-7. `## The N non-negotiables`: a numbered list, each item a bold rule followed by the defect or decision
-   behind it. The same list as `SKILL.md`. Close with the sentence that everything else is the host app's.
+7. `## The N non-negotiables`: a numbered list, each item a bold rule followed by the reason it holds and
+   what verifies it. The same list as `SKILL.md`. Close with the sentence that everything else is the host app's.
 8. Optional, as the module needs: `## Adaptation`, `## Requirements`, `## Security`, `## Verification`,
    `## Links`.
 9. `## Not this`: a two-column table of neighbouring problems and where to go instead, naming the sibling
@@ -246,6 +256,7 @@ Before a release, every line holds.
   standard ones.
 - No em-dash, en-dash, arrow, middle dot or smart quote anywhere in the repository's markdown.
 - The origin is stated in the words of section 2: no denial, none of the banned words, no corpus figures,
-  and nothing that identifies a system, in the frontmatter description included.
+  no defect count or failure story on the front door, and nothing that identifies a system, in the
+  frontmatter description included.
 - The changelog section, the README version line and the tag agree.
 - No file mentions a tool or model as author, and no commit carries an attribution trailer.
