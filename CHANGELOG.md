@@ -5,6 +5,14 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1] - 2026-09-02
+
+### Changed
+
+- The skills table: help-center-markdown 0.2.5 and island-mode-server 0.1.3,
+  wording releases that describe an audit finding by its shape and use
+  neutral identifiers in a template.
+
 ## [0.6.0] - 2026-09-02
 
 The origin rules tighten, in the index and across every skill. The repository
@@ -233,4 +241,5 @@ Initial published version of the Timerise skills index.
 - MIT License.
 - Note that more skills are published as each module stabilises.
 
+[0.6.1]: https://github.com/timerise-ai/skills/releases/tag/v0.6.1
 [0.6.0]: https://github.com/timerise-ai/skills/releases/tag/v0.6.0
