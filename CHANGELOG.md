@@ -5,6 +5,20 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-09-02
+
+### Changed
+
+- `STANDARD.md` section 2: the "measured numbers only" rule becomes "no corpus
+  figures". How many articles, posts, files, tags, locales or screens the
+  earlier implementation had, and ratios such as "25 of 45 links", do not
+  appear anywhere: they describe one deployment and change nothing about the
+  next one. The shape of a finding replaces them. Design parameters, vendor
+  facts, the skill's own test counts and a single measured magnitude that
+  argues for a rule stay. The release checklist in section 8 follows.
+- The skills table: blog-markdown 0.1.4, help-center-markdown 0.2.7 and
+  stripe-connect-subscriptions 0.1.6, released under that rule.
+
 ## [0.6.2] - 2026-09-02
 
 ### Changed
@@ -248,6 +262,7 @@ Initial published version of the Timerise skills index.
 - MIT License.
 - Note that more skills are published as each module stabilises.
 
+[0.7.0]: https://github.com/timerise-ai/skills/releases/tag/v0.7.0
 [0.6.2]: https://github.com/timerise-ai/skills/releases/tag/v0.6.2
 [0.6.1]: https://github.com/timerise-ai/skills/releases/tag/v0.6.1
 [0.6.0]: https://github.com/timerise-ai/skills/releases/tag/v0.6.0

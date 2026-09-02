@@ -50,9 +50,15 @@ in the repository has to read that way, to a person and to a tool summarising it
 - **Separate three things in `provenance.md`:** what the audit found and the templates fix, what was kept
   deliberately with the reason it is safe, and what was designed in the skill and has never run in
   production. The skill's credibility is that it distinguishes them.
-- **Measured numbers only.** A count of file reads, articles, defects or tests appears only if it was
-  measured on the earlier implementation, and only if it passes the rule above. Do not restate a number
-  loosely and do not invent new ones.
+- **No corpus figures.** How many articles, posts, files, tags, locales, screens or sellers the earlier
+  implementation had, and ratios such as "25 of 45 links", do not appear anywhere: they describe one
+  deployment, together they fingerprint it, and none of them changes how the next implementation is built.
+  Say the shape instead: "half a category", "most translated posts", "a two-word tag with and without a
+  hyphen". Numbers that stay are the ones the next implementation needs: design parameters (a 200-item
+  cap, a 15-minute TTL, a 32 px touch target), vendor and API facts, the skill's own test and fixture
+  counts, and the count of defects in the ledger. A single measured magnitude that argues for a rule, such
+  as a 71x read amplification, may stay as that one figure without the corpus behind it. Do not restate a
+  number loosely and do not invent new ones.
 - **Every claim is verifiable.** If a fact about a library, an API or a status code changes, say how it was
   verified: against the library, the docs, or a reproduction. Never from memory.
 
@@ -239,7 +245,7 @@ Before a release, every line holds.
 - The README follows the section order of section 6 and its footer, author and license lines are the
   standard ones.
 - No em-dash, en-dash, arrow, middle dot or smart quote anywhere in the repository's markdown.
-- The origin is stated in the words of section 2: no denial, none of the banned words, and nothing that
-  identifies a system, in the frontmatter description included.
+- The origin is stated in the words of section 2: no denial, none of the banned words, no corpus figures,
+  and nothing that identifies a system, in the frontmatter description included.
 - The changelog section, the README version line and the tag agree.
 - No file mentions a tool or model as author, and no commit carries an attribution trailer.

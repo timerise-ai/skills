@@ -25,13 +25,13 @@ skills-compatible agent can build on the same parts.
 
 | Skill | Version | Builds | Backend |
 |---|---|---|---|
-| [`blog-markdown`](https://github.com/timerise-ai/blog-markdown) | 0.1.3 | File-based multilingual blog with localized slugs, tag pages, related posts, RSS, sitemap, hreflang and a CI content validator | Repository files, no CMS |
+| [`blog-markdown`](https://github.com/timerise-ai/blog-markdown) | 0.1.4 | File-based multilingual blog with localized slugs, tag pages, related posts, RSS, sitemap, hreflang and a CI content validator | Repository files, no CMS |
 | [`booking-kiosk`](https://github.com/timerise-ai/booking-kiosk) | 0.1.3 | Self-service touchscreen kiosk: walk-up booking flow, on-screen keyboard, pay-at-counter or pay-by-QR, server-priced idempotent booking API, LAN failover contract | Backend- and payment-agnostic `KioskBackend` seam, Firestore reference implementation |
 | [`digital-signage`](https://github.com/timerise-ai/digital-signage) | 0.1.5 | In-venue screens: media library, per-screen playlists, device pairing by PIN or URL, fullscreen TV player with stall recovery and health monitoring | Firestore or Supabase |
-| [`help-center-markdown`](https://github.com/timerise-ai/help-center-markdown) | 0.2.6 | Markdown-backed help center: category, tag and article pages, ranked client-side search, locale fallback, JSON-LD, sitemap, CI content validator | Repository files, no CMS |
+| [`help-center-markdown`](https://github.com/timerise-ai/help-center-markdown) | 0.2.7 | Markdown-backed help center: category, tag and article pages, ranked client-side search, locale fallback, JSON-LD, sitemap, CI content validator | Repository files, no CMS |
 | [`island-mode-server`](https://github.com/timerise-ai/island-mode-server) | 0.1.3 | On-premise fallback server: live RxDB replica of a site's Firestore slice, LAN takeover when the internet drops, idempotent reconnect flush, HMAC hardware auth | Firestore cloud, RxDB on the local box |
 | [`ksef`](https://github.com/timerise-ai/ksef) | 1.2.3 | KSeF API 2.0 integration for Poland's mandatory e-invoicing: token auth, invoice encryption, interactive and batch sending, UPO receipts, purchase-invoice sync, QR codes | Postgres (Neon/Supabase) on Vercel |
-| [`stripe-connect-subscriptions`](https://github.com/timerise-ai/stripe-connect-subscriptions) | 0.1.5 | Stripe Connect marketplace settlement and platform subscription billing: split charges, escrow and reserves, account onboarding, off-session billing with dunning, ledger reconciliation | Backend-agnostic store adapter |
+| [`stripe-connect-subscriptions`](https://github.com/timerise-ai/stripe-connect-subscriptions) | 0.1.6 | Stripe Connect marketplace settlement and platform subscription billing: split charges, escrow and reserves, account onboarding, off-session billing with dunning, ledger reconciliation | Backend-agnostic store adapter |
 
 The version is each skill's latest release as recorded in its `CHANGELOG.md`; the skill's own repository is
 the authoritative copy and carries the full feature list. Every skill is versioned on its own line under one
