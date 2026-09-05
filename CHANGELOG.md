@@ -5,6 +5,20 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-09-05
+
+`site-pin-gate` joins the index as the eighth published skill.
+
+### Added
+
+- `site-pin-gate` in the skills table, the all-skills clone loop, the activation
+  examples and the slash-command list: a shared-PIN gate in front of a whole
+  Next.js App Router site from the proxy or middleware layer, armed by one env
+  var, with an unlock page that sets an HMAC cookie token, a return path
+  resolved against the request origin and a failed-attempt budget answering
+  `429`. It keeps no data store, so its backend column names the cookie and the
+  attempt store seam rather than a database.
+
 ## [0.8.0] - 2026-09-02
 
 ### Changed
@@ -281,6 +295,7 @@ Initial published version of the Timerise skills index.
 - MIT License.
 - Note that more skills are published as each module stabilises.
 
+[0.9.0]: https://github.com/timerise-ai/skills/releases/tag/v0.9.0
 [0.8.0]: https://github.com/timerise-ai/skills/releases/tag/v0.8.0
 [0.7.0]: https://github.com/timerise-ai/skills/releases/tag/v0.7.0
 [0.6.2]: https://github.com/timerise-ai/skills/releases/tag/v0.6.2
