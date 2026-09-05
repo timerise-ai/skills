@@ -31,6 +31,7 @@ skills-compatible agent can build on the same parts.
 | [`help-center-markdown`](https://github.com/timerise-ai/help-center-markdown) | 0.2.8 | Markdown-backed help center: category, tag and article pages, ranked client-side search, locale fallback, JSON-LD, sitemap, CI content validator | Repository files, no CMS |
 | [`island-mode-server`](https://github.com/timerise-ai/island-mode-server) | 0.1.4 | On-premise fallback server: live RxDB replica of a site's Firestore slice, LAN takeover when the internet drops, idempotent reconnect flush, HMAC hardware auth | Firestore cloud, RxDB on the local box |
 | [`ksef`](https://github.com/timerise-ai/ksef) | 1.2.4 | KSeF API 2.0 integration for Poland's mandatory e-invoicing: token auth, invoice encryption, interactive and batch sending, UPO receipts, purchase-invoice sync, QR codes | Postgres (Neon/Supabase) on Vercel |
+| [`site-pin-gate`](https://github.com/timerise-ai/site-pin-gate) | 0.3.0 | Shared-PIN gate in front of a whole site from the proxy or middleware layer: one env var arms it, an unlock page sets an HMAC cookie, origin-resolved return path, attempt budget answering 429 | No data store, one cookie and an attempt store behind a seam |
 | [`stripe-connect-subscriptions`](https://github.com/timerise-ai/stripe-connect-subscriptions) | 0.1.7 | Stripe Connect marketplace settlement and platform subscription billing: split charges, escrow and reserves, account onboarding, off-session billing with dunning, ledger reconciliation | Backend-agnostic store adapter |
 
 The version is each skill's latest release as recorded in its `CHANGELOG.md`; the skill's own repository is
@@ -72,6 +73,7 @@ for skill in \
   help-center-markdown \
   island-mode-server \
   ksef \
+  site-pin-gate \
   stripe-connect-subscriptions; do
   git clone "https://github.com/timerise-ai/$skill.git" ~/.claude/skills/"$skill"
 done
@@ -85,10 +87,11 @@ so one `git pull` updates every agent. Update a skill with `git pull` in its dir
 
 A skill activates automatically when a task matches its description, for example "add a knowledge base with
 search", "pair a TV to a playlist", "make this markdown blog multilingual", "add a walk-up kiosk with counter
-payment", "keep the site taking bookings when the internet drops", "why is this invoice rejected with a 430",
-"why is the connected account never funded". It can also be invoked explicitly with its slash command
-(`/blog-markdown`, `/booking-kiosk`, `/digital-signage`, `/help-center-markdown`, `/island-mode-server`,
-`/ksef`, `/stripe-connect-subscriptions`).
+payment", "keep the site taking bookings when the internet drops", "hide the staging site behind a PIN until
+launch", "why is this invoice rejected with a 430", "why is the connected account never funded". It can also
+be invoked explicitly with its slash command (`/blog-markdown`, `/booking-kiosk`, `/digital-signage`,
+`/help-center-markdown`, `/island-mode-server`, `/ksef`, `/site-pin-gate`,
+`/stripe-connect-subscriptions`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
 rather than assuming it fired. The **non-negotiables** each skill names are where models diverge most, so
