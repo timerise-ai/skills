@@ -5,6 +5,25 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-09-21
+
+Every `SKILL.md` now closes with a link to this index.
+
+### Changed
+
+- `STANDARD.md` section 4: the `SKILL.md` body gains an eighth item, a closing
+  line under no heading linking the index, so the agent that has a skill loaded
+  can find the sibling skills without leaving the entry point. The 130 to 160
+  line budget in the same section and in the section 11 checklist holds that
+  closing line aside, so no skill loses content to it.
+- The skills table: all twelve skills released under that rule. `blog-markdown`
+  0.1.6, `booking-kiosk` 0.1.5, `browser-extension-connector` 0.1.1,
+  `digital-signage` 0.1.7, `ecommerce-process-mining` 0.1.1,
+  `help-center-markdown` 0.2.9, `island-mode-server` 0.1.5, `ksef` 1.2.5,
+  `site-pin-gate` 0.3.1, `slack-ai-bot` 0.1.1,
+  `stripe-connect-subscriptions` 0.1.8, `visit-logger` 0.1.1. Each carries the
+  closing line and the record of it in its own `CLAUDE.md`.
+
 ## [0.10.0] - 2026-09-21
 
 `browser-extension-connector`, `ecommerce-process-mining`, `slack-ai-bot` and
