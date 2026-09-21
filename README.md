@@ -27,12 +27,16 @@ skills-compatible agent can build on the same parts.
 |---|---|---|---|
 | [`blog-markdown`](https://github.com/timerise-ai/blog-markdown) | 0.1.5 | File-based multilingual blog with localized slugs, tag pages, related posts, RSS, sitemap, hreflang and a CI content validator | Repository files, no CMS |
 | [`booking-kiosk`](https://github.com/timerise-ai/booking-kiosk) | 0.1.4 | Self-service touchscreen kiosk: walk-up booking flow, on-screen keyboard, pay-at-counter or pay-by-QR, server-priced idempotent booking API, LAN failover contract | Backend- and payment-agnostic `KioskBackend` seam, Firestore reference implementation |
+| [`browser-extension-connector`](https://github.com/timerise-ai/browser-extension-connector) | 0.1.0 | Chrome MV3 connector for a web service with no usable public API: a MAIN-world tap on the page's own fetch and XHR, auth headers replayed only to their own origin, a bounded offline buffer, one polled endpoint carrying records up and commands down, PIN pairing, diagnostics | Host app behind a two-endpoint contract, the service behind an adapter seam |
 | [`digital-signage`](https://github.com/timerise-ai/digital-signage) | 0.1.6 | In-venue screens: media library, per-screen playlists, device pairing by PIN or URL, fullscreen TV player with stall recovery and health monitoring | Firestore or Supabase |
+| [`ecommerce-process-mining`](https://github.com/timerise-ai/ecommerce-process-mining) | 0.1.0 | Employee process mining for an e-commerce back office: a consented MV3 extension reading DOM events rather than pixels, a gap-capture form, an ingest route that scrubs before it stores, a batch AI pipeline writing per-role SOPs and a ranked automation shortlist | Postgres/Supabase with row-level security, or Firestore |
 | [`help-center-markdown`](https://github.com/timerise-ai/help-center-markdown) | 0.2.8 | Markdown-backed help center: category, tag and article pages, ranked client-side search, locale fallback, JSON-LD, sitemap, CI content validator | Repository files, no CMS |
 | [`island-mode-server`](https://github.com/timerise-ai/island-mode-server) | 0.1.4 | On-premise fallback server: live RxDB replica of a site's Firestore slice, LAN takeover when the internet drops, idempotent reconnect flush, HMAC hardware auth | Firestore cloud, RxDB on the local box |
 | [`ksef`](https://github.com/timerise-ai/ksef) | 1.2.4 | KSeF API 2.0 integration for Poland's mandatory e-invoicing: token auth, invoice encryption, interactive and batch sending, UPO receipts, purchase-invoice sync, QR codes | Postgres (Neon/Supabase) on Vercel |
 | [`site-pin-gate`](https://github.com/timerise-ai/site-pin-gate) | 0.3.0 | Shared-PIN gate in front of a whole site from the proxy or middleware layer: one env var arms it, an unlock page sets an HMAC cookie, origin-resolved return path, attempt budget answering 429 | No data store, one cookie and an attempt store behind a seam |
+| [`slack-ai-bot`](https://github.com/timerise-ai/slack-ai-bot) | 0.1.0 | Two-way Slack AI bot: mentions, DMs and thread follow-ups answered by a model with tools scoped to the asking user, app-initiated reports, Approve and Cancel buttons whose click runs the side effect exactly once, raw-body signature verification, 3-second ack | Backend-agnostic `BotHost` seam, Postgres/Supabase and in-memory stores |
 | [`stripe-connect-subscriptions`](https://github.com/timerise-ai/stripe-connect-subscriptions) | 0.1.7 | Stripe Connect marketplace settlement and platform subscription billing: split charges, escrow and reserves, account onboarding, off-session billing with dunning, ledger reconciliation | Backend-agnostic store adapter |
+| [`visit-logger`](https://github.com/timerise-ai/visit-logger) | 0.1.0 | Server-side log of who opened a shared resource, from where and on what: a page-view filter that drops prefetches and Server Actions, bot detection past the framework's list, edge geolocation, NULL-safe repeat-visitor matching, sittings, first-open announcements, admin panels | Postgres/Supabase or Firestore behind a `VisitStore` seam |
 
 The version is each skill's latest release as recorded in its `CHANGELOG.md`; the skill's own repository is
 the authoritative copy and carries the full feature list. Every skill is versioned on its own line under one
@@ -69,12 +73,16 @@ All of them:
 for skill in \
   blog-markdown \
   booking-kiosk \
+  browser-extension-connector \
   digital-signage \
+  ecommerce-process-mining \
   help-center-markdown \
   island-mode-server \
   ksef \
   site-pin-gate \
-  stripe-connect-subscriptions; do
+  slack-ai-bot \
+  stripe-connect-subscriptions \
+  visit-logger; do
   git clone "https://github.com/timerise-ai/$skill.git" ~/.claude/skills/"$skill"
 done
 ```
@@ -88,10 +96,13 @@ so one `git pull` updates every agent. Update a skill with `git pull` in its dir
 A skill activates automatically when a task matches its description, for example "add a knowledge base with
 search", "pair a TV to a playlist", "make this markdown blog multilingual", "add a walk-up kiosk with counter
 payment", "keep the site taking bookings when the internet drops", "hide the staging site behind a PIN until
-launch", "why is this invoice rejected with a 430", "why is the connected account never funded". It can also
-be invoked explicitly with its slash command (`/blog-markdown`, `/booking-kiosk`, `/digital-signage`,
-`/help-center-markdown`, `/island-mode-server`, `/ksef`, `/site-pin-gate`,
-`/stripe-connect-subscriptions`).
+launch", "tell me when the customer opens the proposal link", "let the team ask our Slack bot about a
+booking", "get data out of a site that has no API", "write down how the back office really handles returns",
+"why is this invoice rejected with a 430", "why is the connected account never funded". It can also
+be invoked explicitly with its slash command (`/blog-markdown`, `/booking-kiosk`,
+`/browser-extension-connector`, `/digital-signage`, `/ecommerce-process-mining`, `/help-center-markdown`,
+`/island-mode-server`, `/ksef`, `/site-pin-gate`, `/slack-ai-bot`, `/stripe-connect-subscriptions`,
+`/visit-logger`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
 rather than assuming it fired. The **non-negotiables** each skill names are where models diverge most, so
@@ -107,7 +118,7 @@ The skills share one layout, so an agent that has used one knows how to read the
 | `references/adaptation.md` | The seam contract with the host app, covering auth, tenancy, storage, styling, i18n and the domain rename, plus the module's **non-negotiables**. Where a skill keeps the seam in `SKILL.md` or its architecture reference instead, `SKILL.md` says so |
 | `references/*.md` | One file per concern: data model, backend specifics, routes, UI, operations, extensions. Loaded on demand; the agent reads only what a task needs |
 | `references/provenance.md` | The engineering ledger: what the audit of the earlier implementation changed and how the templates verify it, what was kept on purpose, and what is new in the skill. In `ksef` that record is the changelog |
-| `assets/` | Runnable files a reference points at rather than inlines: in `ksef`, the TypeScript examples for auth, crypto, the API client, sending and QR codes; in `island-mode-server`, the passing vitest suite covering HMAC verification, offline tokens, delta fold-out and failover rescan |
+| `assets/` | Runnable files a reference points at rather than inlines: in `ksef`, the TypeScript examples for auth, crypto, the API client, sending and QR codes; in `island-mode-server`, the passing vitest suite covering HMAC verification, offline tokens, delta fold-out and failover rescan; in `browser-extension-connector`, the buildable extension tree with its manifest, sources, tests and packaging scripts |
 | `CHANGELOG.md` | Semantic versioning |
 
 Three properties hold across the pack:
