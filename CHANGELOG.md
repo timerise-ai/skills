@@ -5,6 +5,42 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-09-21
+
+`browser-extension-connector`, `ecommerce-process-mining`, `slack-ai-bot` and
+`visit-logger` join the index, each at its own `0.1.0`.
+
+### Added
+
+- `browser-extension-connector` in the skills table, the all-skills clone loop,
+  the activation examples and the slash-command list: a Chrome MV3 connector for
+  a web service with no usable public API, tapping the page's own `fetch` and
+  XHR in the MAIN world, replaying the page's auth headers only to their own
+  origin, buffering offline within a bound, and exchanging records and commands
+  with the host app over one polled endpoint. Its backend column names the
+  two-endpoint host contract and the adapter seam rather than a database.
+- `ecommerce-process-mining` in the same four places: employee process mining
+  for an e-commerce back office, with a consented Manifest V3 extension that
+  reads DOM events rather than pixels from the admin tools staff already use, a
+  gap-capture form for the work a browser cannot see, an ingest route that
+  scrubs before it stores, and a batch pipeline that writes per-role SOPs and a
+  ranked automation shortlist. Postgres/Supabase with row-level security, or
+  Firestore.
+- `slack-ai-bot` in the same four places: a two-way Slack AI bot whose answers
+  and tool calls are scoped to the person asking, with app-initiated reports,
+  Approve and Cancel buttons whose click runs its side effect exactly once,
+  raw-body signature verification and the three-second acknowledgement. Its
+  backend column names the `BotHost` seam and the stores shipped behind it.
+- `visit-logger` in the same four places: a server-side log of who opened a
+  shared resource, from where and on what, with the page-view filter that keeps
+  prefetches and Server Actions out of it, bot detection past the framework's
+  list, edge geolocation, NULL-safe repeat-visitor matching, sittings,
+  first-open announcements and the admin panels. Postgres/Supabase or Firestore
+  behind a `VisitStore` seam.
+- The `assets/` row of the layout table names `browser-extension-connector`'s
+  buildable extension tree alongside the `ksef` examples and the
+  `island-mode-server` suite.
+
 ## [0.9.0] - 2026-09-05
 
 `site-pin-gate` joins the index as the eighth published skill.
