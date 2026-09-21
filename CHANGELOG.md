@@ -5,6 +5,16 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.1] - 2026-09-21
+
+### Changed
+
+- The skills table: `browser-extension-connector` 0.1.2 and
+  `ecommerce-process-mining` 0.1.2, a release in which each names the other in
+  its `Not this` table. Both build a Manifest V3 extension, so a request for one
+  could match the other, and the boundary between them is now written down in
+  both directions: a service's data, or a record of how the work is done.
+
 ## [0.11.0] - 2026-09-21
 
 Every `SKILL.md` now closes with a link to this index.
