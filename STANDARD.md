@@ -90,8 +90,8 @@ same kebab-case string.
 
 ## 4. `SKILL.md`
 
-The agent loads `SKILL.md` whole on every activation, so it stays short: 130 to 160 lines. Everything
-longer goes to `references/`.
+The agent loads `SKILL.md` whole on every activation, so it stays short: 130 to 160 lines, the closing
+index line aside. Everything longer goes to `references/`.
 
 **Frontmatter.** Two fields.
 
@@ -112,6 +112,9 @@ longer goes to `references/`.
    section.
 6. `## Quick start`: the ordered steps to build the module, each naming the reference to read.
 7. `## Reference directory`: a table mapping the words in a task to the file that answers it.
+8. A closing line, after the table and under no heading, linking the index so the agent that has the
+   skill loaded can find the sibling skills: `Part of the [Timerise
+   Skills](https://github.com/timerise-ai/skills) index, which lists the sibling skills.`
 
 ## 5. `references/`
 
@@ -246,8 +249,9 @@ versioned separately. All of them follow one release standard.
 
 Before a release, every line holds.
 
-- `SKILL.md` is 130 to 160 lines, its frontmatter has `name` and a `description` in the order of section
-  4, and its hard rules match the README's non-negotiables.
+- `SKILL.md` is 130 to 160 lines, the closing index line aside, its frontmatter has `name` and a
+  `description` in the order of section 4, its hard rules match the README's non-negotiables, and it
+  closes with the index line of section 4.
 - The reference directory in `SKILL.md`, the quick start in `SKILL.md` and the file table in `README.md`
   name exactly the files in `references/` and `assets/`.
 - Every code block names its destination or continues one that did.
