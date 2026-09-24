@@ -5,6 +5,21 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] - 2026-09-25
+
+`ledger-wallet` joins the index at its own `0.1.1`.
+
+### Added
+
+- `ledger-wallet` in the skills table, the all-skills clone loop, the
+  activation examples and the slash-command list: a customer wallet kept as an
+  append-only ledger with a balance per currency, Stripe Checkout top-ups,
+  orders paid from the wallet, by card or split between them with the balance
+  part held until the card pays, refunds returned to each source, and staff
+  adjustments with a required reason, every movement keyed by a ref so a retry
+  replays the first result. Firestore or Postgres behind a store seam verified
+  by one conformance suite.
+
 ## [0.12.0] - 2026-09-25
 
 `bookable-events` joins the index at its own `0.1.0`.
