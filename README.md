@@ -34,6 +34,7 @@ skills-compatible agent can build on the same parts.
 | [`help-center-markdown`](https://github.com/timerise-ai/help-center-markdown) | 0.2.9 | Markdown-backed help center: category, tag and article pages, ranked client-side search, locale fallback, JSON-LD, sitemap, CI content validator | Repository files, no CMS |
 | [`island-mode-server`](https://github.com/timerise-ai/island-mode-server) | 0.1.5 | On-premise fallback server: live RxDB replica of a site's Firestore slice, LAN takeover when the internet drops, idempotent reconnect flush, HMAC hardware auth | Firestore cloud, RxDB on the local box |
 | [`ksef`](https://github.com/timerise-ai/ksef) | 1.2.5 | KSeF API 2.0 integration for Poland's mandatory e-invoicing: token auth, invoice encryption, interactive and batch sending, UPO receipts, purchase-invoice sync, QR codes | Postgres (Neon/Supabase) on Vercel |
+| [`ledger-wallet`](https://github.com/timerise-ai/ledger-wallet) | 0.1.1 | Customer wallet as an append-only ledger with a balance per currency: Stripe Checkout top-ups, orders paid from the wallet, by card or split between them, a hold on the balance part until the card pays, refunds to source, staff adjustments with a reason, every movement keyed by a ref so a retry replays | Firestore or Postgres behind a store seam, one conformance suite for both |
 | [`site-pin-gate`](https://github.com/timerise-ai/site-pin-gate) | 0.3.1 | Shared-PIN gate in front of a whole site from the proxy or middleware layer: one env var arms it, an unlock page sets an HMAC cookie, origin-resolved return path, attempt budget answering 429 | No data store, one cookie and an attempt store behind a seam |
 | [`slack-ai-bot`](https://github.com/timerise-ai/slack-ai-bot) | 0.1.1 | Two-way Slack AI bot: mentions, DMs and thread follow-ups answered by a model with tools scoped to the asking user, app-initiated reports, Approve and Cancel buttons whose click runs the side effect exactly once, raw-body signature verification, 3-second ack | Backend-agnostic `BotHost` seam, Postgres/Supabase and in-memory stores |
 | [`stripe-connect-subscriptions`](https://github.com/timerise-ai/stripe-connect-subscriptions) | 0.1.8 | Stripe Connect marketplace settlement and platform subscription billing: split charges, escrow and reserves, account onboarding, off-session billing with dunning, ledger reconciliation | Backend-agnostic store adapter |
@@ -81,6 +82,7 @@ for skill in \
   help-center-markdown \
   island-mode-server \
   ksef \
+  ledger-wallet \
   site-pin-gate \
   slack-ai-bot \
   stripe-connect-subscriptions \
@@ -100,11 +102,11 @@ search", "pair a TV to a playlist", "make this markdown blog multilingual", "cha
 doesn't show", "add a walk-up kiosk with counter payment", "keep the site taking bookings when the internet
 drops", "hide the staging site behind a PIN until launch", "tell me when the customer opens the proposal
 link", "let the team ask our Slack bot about a booking", "get data out of a site that has no API", "write down
-how the back office really handles returns", "why is this invoice rejected with a 430", "why is the connected
-account never funded". It can also be invoked explicitly with its slash command (`/blog-markdown`,
-`/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`, `/digital-signage`,
-`/ecommerce-process-mining`, `/help-center-markdown`, `/island-mode-server`, `/ksef`, `/site-pin-gate`,
-`/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
+how the back office really handles returns", "why is this invoice rejected with a 430", "let customers top up a
+balance and pay with it", "why is the connected account never funded". It can also be invoked explicitly
+with its slash command (`/blog-markdown`, `/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`,
+`/digital-signage`, `/ecommerce-process-mining`, `/help-center-markdown`, `/island-mode-server`, `/ksef`,
+`/ledger-wallet`, `/site-pin-gate`, `/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
 rather than assuming it fired. The **non-negotiables** each skill names are where models diverge most, so
