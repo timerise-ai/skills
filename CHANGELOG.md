@@ -5,6 +5,20 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-09-25
+
+`bookable-events` joins the index at its own `0.1.0`.
+
+### Added
+
+- `bookable-events` in the skills table, the all-skills clone loop, the
+  activation examples and the slash-command list: capacity-limited registration
+  for free and paid events with Stripe Checkout tickets, a refundable card hold
+  on free events that is released when the guest checks in and captured when
+  they don't show, staff check-in, refunds and event cancellation, every change
+  run through one pure state machine inside a transaction with Stripe called
+  only after commit. Firestore or Postgres behind an `EventStore` seam.
+
 ## [0.11.1] - 2026-09-21
 
 ### Changed
