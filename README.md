@@ -25,6 +25,7 @@ skills-compatible agent can build on the same parts.
 
 | Skill | Version | Builds | Backend |
 |---|---|---|---|
+| [`ad-campaign-runbook`](https://github.com/timerise-ai/ad-campaign-runbook) | 0.1.0 | LinkedIn Ads campaign runbook for one blog post: a probe of what the site actually measures, a campaign structure sized by the budget and the platform minimum, ad copy traceable to the post, an organic companion post with author-only slots, UTMs, conversions and click-by-click Campaign Manager steps | No data store, markdown posts in the repository; analytics vendor and consent component behind a seam |
 | [`blog-markdown`](https://github.com/timerise-ai/blog-markdown) | 0.1.6 | File-based multilingual blog with localized slugs, tag pages, related posts, RSS, sitemap, hreflang and a CI content validator | Repository files, no CMS |
 | [`bookable-events`](https://github.com/timerise-ai/bookable-events) | 0.1.0 | Capacity-limited events with Stripe payments: Checkout tickets, a refundable card hold on free events released on check-in and captured on no-show, staff check-in, refunds, event cancellation, one pure state machine with Stripe called only after commit | Firestore or Postgres behind an `EventStore` seam |
 | [`booking-kiosk`](https://github.com/timerise-ai/booking-kiosk) | 0.1.5 | Self-service touchscreen kiosk: walk-up booking flow, on-screen keyboard, pay-at-counter or pay-by-QR, server-priced idempotent booking API, LAN failover contract | Backend- and payment-agnostic `KioskBackend` seam, Firestore reference implementation |
@@ -73,6 +74,7 @@ All of them:
 
 ```bash
 for skill in \
+  ad-campaign-runbook \
   blog-markdown \
   bookable-events \
   booking-kiosk \
@@ -98,15 +100,16 @@ so one `git pull` updates every agent. Update a skill with `git pull` in its dir
 ### Activation
 
 A skill activates automatically when a task matches its description, for example "add a knowledge base with
-search", "pair a TV to a playlist", "make this markdown blog multilingual", "charge a deposit when a guest
-doesn't show", "add a walk-up kiosk with counter payment", "keep the site taking bookings when the internet
-drops", "hide the staging site behind a PIN until launch", "tell me when the customer opens the proposal
-link", "let the team ask our Slack bot about a booking", "get data out of a site that has no API", "write down
-how the back office really handles returns", "why is this invoice rejected with a 430", "let customers top up a
-balance and pay with it", "why is the connected account never funded". It can also be invoked explicitly
-with its slash command (`/blog-markdown`, `/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`,
-`/digital-signage`, `/ecommerce-process-mining`, `/help-center-markdown`, `/island-mode-server`, `/ksef`,
-`/ledger-wallet`, `/site-pin-gate`, `/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
+search", "write a LinkedIn ads runbook for this post", "pair a TV to a playlist", "make this markdown blog
+multilingual", "charge a deposit when a guest doesn't show", "add a walk-up kiosk with counter payment", "keep
+the site taking bookings when the internet drops", "hide the staging site behind a PIN until launch", "tell me
+when the customer opens the proposal link", "let the team ask our Slack bot about a booking", "get data out of
+a site that has no API", "write down how the back office really handles returns", "why is this invoice
+rejected with a 430", "let customers top up a balance and pay with it", "why is the connected account never
+funded". It can also be invoked explicitly with its slash command (`/ad-campaign-runbook`, `/blog-markdown`,
+`/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`, `/digital-signage`,
+`/ecommerce-process-mining`, `/help-center-markdown`, `/island-mode-server`, `/ksef`, `/ledger-wallet`,
+`/site-pin-gate`, `/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
 rather than assuming it fired. The **non-negotiables** each skill names are where models diverge most, so
