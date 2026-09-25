@@ -5,6 +5,21 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2026-09-25
+
+`ad-campaign-runbook` joins the index at its own `0.1.0`.
+
+### Added
+
+- `ad-campaign-runbook` in the skills table, the all-skills clone loop, the
+  activation examples and the slash-command list: one blog post turned into a
+  LinkedIn Ads campaign runbook a marketer can execute, with a probe of what the
+  site actually measures, a campaign count that follows from the budget and the
+  platform minimum, ad copy traceable to the post, an organic companion post
+  with author-only slots, UTMs, conversions and click-by-click Campaign Manager
+  steps. Written for a Next.js App Router site whose posts are markdown in the
+  repository, with the analytics vendor and consent component behind a seam.
+
 ## [0.14.0] - 2026-09-25
 
 `ledger-wallet` joins the index at its own `0.1.1`.
