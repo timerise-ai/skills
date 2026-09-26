@@ -1,0 +1,135 @@
+# Reusable: runs the calling skill through one coding agent and commits the
+# result to that skill's evals/ folder. Each skill repository calls this from
+# its own .github/workflows/agent-eval.yml on every release and on demand.
+#
+# Secrets (set them once on the organization): ANTHROPIC_API_KEY for Claude
+# Code, OPENAI_API_KEY for Codex CLI, GEMINI_API_KEY for Gemini CLI. An agent
+# whose key is missing is skipped with a notice, not failed.
+name: Agent eval
+
+on:
+  workflow_call:
+    inputs:
+      agent:
+        description: claude-code, codex or gemini-cli
+        type: string
+        required: true
+      prompt:
+        description: Which prompt in evals/prompts.md, from 1
+        type: number
+        default: 1
+      timeout-minutes:
+        type: number
+        default: 60
+    secrets:
+      ANTHROPIC_API_KEY:
+        required: false
+      OPENAI_API_KEY:
+        required: false
+      GEMINI_API_KEY:
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      AGENT: ${{ inputs.agent }}
+    steps:
+      - name: Check the agent's key
+        id: key
+        env:
+          HAS_ANTHROPIC: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+          HAS_OPENAI: ${{ secrets.OPENAI_API_KEY != '' }}
+          HAS_GEMINI: ${{ secrets.GEMINI_API_KEY != '' }}
+        run: |
+          case "$AGENT" in
+            claude-code) has="$HAS_ANTHROPIC"; name=ANTHROPIC_API_KEY ;;
+            codex) has="$HAS_OPENAI"; name=OPENAI_API_KEY ;;
+            gemini-cli) has="$HAS_GEMINI"; name=GEMINI_API_KEY ;;
+            *) echo "::error::Unknown agent $AGENT"; exit 1 ;;
+          esac
+          if [ "$has" != "true" ]; then
+            echo "::notice::$name is not set, skipping $AGENT"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # The agent runs with every permission, so the checkout keeps no token
+      # the agent could find; the token is only put back to push the result.
+      - uses: actions/checkout@v5
+        if: steps.key.outputs.skip != 'true'
+        with:
+          path: skill
+          # main, not the release tag: the result is committed on top of it.
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/checkout@v5
+        if: steps.key.outputs.skip != 'true'
+        with:
+          repository: timerise-ai/skills
+          path: harness
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        if: steps.key.outputs.skip != 'true'
+        with:
+          node-version: 22
+
+      - name: Install the harness and the agent
+        if: steps.key.outputs.skip != 'true'
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          npm install --prefix harness/eval --no-audit --no-fund
+          case "$AGENT" in
+            claude-code) npm install -g @anthropic-ai/claude-code ;;
+            codex) npm install -g @openai/codex && printenv OPENAI_API_KEY | codex login --with-api-key ;;
+            gemini-cli) npm install -g @google/gemini-cli ;;
+          esac
+
+      # Only the running agent's own key is in its environment.
+      - name: Run the agent
+        id: run
+        if: steps.key.outputs.skip != 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ inputs.agent == 'claude-code' && secrets.ANTHROPIC_API_KEY || '' }}
+          GEMINI_API_KEY: ${{ inputs.agent == 'gemini-cli' && secrets.GEMINI_API_KEY || '' }}
+          PROMPT: ${{ inputs.prompt }}
+          TIMEOUT: ${{ inputs.timeout-minutes }}
+        run: |
+          node harness/eval/run.mjs --skill-dir skill --agent "$AGENT" --prompt "$PROMPT" \
+            --timeout "$TIMEOUT" --log "$RUNNER_TEMP/agent.log"
+
+      - name: Keep the agent's log
+        if: always() && steps.key.outputs.skip != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-log-${{ inputs.agent }}-p${{ inputs.prompt }}
+          path: ${{ runner.temp }}/agent.log
+          if-no-files-found: ignore
+          retention-days: 90
+
+      - name: Commit the result
+        if: steps.run.outcome == 'success'
+        working-directory: skill
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FILE: ${{ steps.run.outputs.file }}
+          RESULT: ${{ steps.run.outputs.result }}
+          PROMPT: ${{ inputs.prompt }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git add "$FILE"
+          git commit -m "chore(evals): $AGENT on prompt $PROMPT, $RESULT"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase -q origin main
+            git push origin HEAD:main && exit 0
+            sleep $((attempt * 5))
+          done
+          exit 1

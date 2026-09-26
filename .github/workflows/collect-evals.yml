@@ -1,0 +1,40 @@
+# Copies every skill's evals/ results into evals/<skill>/ and regenerates
+# EVALS.md. Reads the public skill repositories only; the one write is to this
+# repository, with its own token.
+name: Collect evals
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect-evals
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm install --prefix eval --no-audit --no-fund
+      - run: node eval/collect.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Commit when something changed
+        run: |
+          git add EVALS.md evals
+          if git diff --cached --quiet; then
+            echo "No new results."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(evals): collect agent eval results"
+          git push

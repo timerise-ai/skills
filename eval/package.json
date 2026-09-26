@@ -1,0 +1,13 @@
+{
+  "name": "skills-eval",
+  "private": true,
+  "type": "module",
+  "description": "Runs a skill through a coding agent on a fresh Next.js app and records the result.",
+  "scripts": {
+    "run": "node run.mjs",
+    "collect": "node collect.mjs"
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
+  }
+}
