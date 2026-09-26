@@ -127,6 +127,7 @@ The skills share one layout, so an agent that has used one knows how to read the
 | `references/provenance.md` | The engineering ledger: what the audit of the earlier implementation changed and how the templates verify it, what was kept on purpose, and what is new in the skill. In `ksef` that record is the changelog |
 | `assets/` | Runnable files a reference points at rather than inlines: in `ksef`, the TypeScript examples for auth, crypto, the API client, sending and QR codes; in `island-mode-server`, the passing vitest suite covering HMAC verification, offline tokens, delta fold-out and failover rescan; in `browser-extension-connector`, the buildable extension tree with its manifest, sources, tests and packaging scripts |
 | `CHANGELOG.md` | Semantic versioning |
+| `evals/` | What an operator types after installing (`prompts.md`), and one file per agent eval: the skill installed into an empty Next.js app, one prompt, no help, then type-checked, built and tested. [EVALS.md](EVALS.md) has the newest run of every skill, and [STANDARD.md](STANDARD.md) how a run is made |
 
 Three properties hold across the pack:
 

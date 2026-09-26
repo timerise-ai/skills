@@ -84,6 +84,9 @@ in the repository has to read that way, to a person and to a tool summarising it
 | `references/adaptation.md` | yes, or stated substitute | The seam contract with the host app and the non-negotiables. A skill may keep the seam in `SKILL.md` or its architecture reference instead; `SKILL.md` then says so |
 | `references/provenance.md` | yes, or stated substitute | The audit record of section 2. An integration skill written from a vendor specification may keep this record in `CHANGELOG.md`; `README.md` then says so |
 | `assets/` | optional | Runnable files a reference points at rather than inlines: example scripts, a test suite carried into the target project |
+| `evals/prompts.md` | yes, when the skill builds code | The prompts an operator types after installing, which the agent evals of section 10 run |
+| `evals/<date>-<agent>-p<n>.md` | after an eval | One file per agent eval run: what was measured, then what the person who ran it saw |
+| `.github/workflows/agent-eval.yml` | optional | The caller of this index's eval workflow, set up by a maintainer under section 10, *Automating the run* |
 
 The repository name, the `name` in the `SKILL.md` frontmatter, the README title and the slash command are the
 same kebab-case string.
@@ -156,8 +159,8 @@ Sections in this order; optional ones are marked.
 5. `## Activation`: the tasks and phrases that activate the skill automatically, and the explicit
    invocation in each host: `/<name>` in Claude Code, `$<name>` in Codex CLI, `/skills` in Gemini CLI. Say
    that each host matches its own way and that a first run should invoke explicitly.
-6. `## What's inside`: the file table, one row per file in the repository, then a paragraph on where the
-   seam lives and what it bounds.
+6. `## What's inside`: the file table, one row per file in the repository and one for `evals/`, then a
+   paragraph on where the seam lives and what it bounds.
 7. `## The N non-negotiables`: a numbered list, each item a bold rule followed by the reason it holds and
    what verifies it. The same list as `SKILL.md`. Close with the sentence that everything else is the host app's.
 8. Optional, as the module needs: `## Adaptation`, `## Requirements`, `## Security`, `## Verification`,
@@ -200,7 +203,7 @@ Written for an agent editing the skill repository itself. Three sections.
 - **What this repository is**: a skill package, markdown only, nothing executes here; the commands and code
   in `references/` describe the generated app, not this repository; where the skill came from and that
   `provenance.md` is the rationale layer.
-- **Structure**: what each file carries, in a few bullets.
+- **Structure**: what each file carries, in a few bullets, `evals/` included.
 - **Editing conventions**: code blocks name their destination; identifiers are shared across files; keep the
   reference directory in `SKILL.md`, the quick start in `SKILL.md` and the file table in `README.md` in sync;
   the odd-looking parts stay; measured numbers are load-bearing; additions are marked as additions; the
@@ -230,22 +233,189 @@ versioned separately. All of them follow one release standard.
 - **Push** `main` and the tags together. A release is published when the tag and the Release are on GitHub.
 - **Commits** between releases follow Conventional Commits: `docs(readme): ...`, `feat(references): ...`,
   `fix(templates): ...`. The release process reads them to decide the bump. No attribution trailers.
+- **Evals are not skill content.** A new prompt or an eval result is committed as `chore(evals): ...`, never
+  causes a bump and never rides in the release commit.
 
-## 10. Publishing a new skill
+## 10. Agent evals
+
+An eval shows what an agent builds from the skill when a stranger uses it: the skill installed into an empty
+app, one prompt, no help. A person runs it in the agent's normal interactive session, or the release
+workflow of *Automating the run* below does, and the result is committed to the skill's `evals/` folder.
+
+**The prompts.** `evals/prompts.md` carries two or three prompts in its frontmatter, and a short paragraph
+below it saying what the folder is.
+
+```yaml
+prompts:
+  - prompt: "Hide this whole site behind a PIN until launch. One environment variable turns it on, and search engines must not index anything while it is on."
+    stack: No data store
+```
+
+Each prompt is what an operator would type after installing the skill, in their words rather than the
+skill's vocabulary. `stack` names the backend the prompt asks for, when it asks for one. The first prompt
+builds in a fresh Next.js app with no external service; the others may extend, audit or debug. Prompts are
+numbered from 1 in the order they appear and a result quotes its prompt, so a prompt that has results is not
+reworded: add a new one instead.
+
+**The run.** In this order.
+
+1. Copy [`eval/fixture/`](eval/fixture) from this index, a fresh Next.js App Router app with TypeScript and
+   nothing else, to an empty folder outside any repository. Rename `gitignore` to `.gitignore`, run
+   `npm install`, then `git init`, `git add -A` and `git commit -m fixture`.
+2. Install the skill the way its README says, for the one agent under test:
+   `npx skills add timerise-ai/<name> -a <agent> -y`. Commit again, so the diff that follows is the agent's
+   alone.
+3. Start the agent in that folder with a clean profile: no other skills, no personal instructions, no memory.
+   Where that is not possible, the result says `isolated: false`.
+4. Paste the prompt verbatim, then this note, verbatim:
+
+   ```text
+   Work unattended: do not ask questions, make reasonable assumptions and list them at the end. No external services are reachable from here: read every credential from environment variables and do not require them at build time. When you finish, `npm run typecheck` and `npm run build` must pass, and if the skill ships tests, wire them to `npm test` so they run.
+   ```
+
+5. Approve what the agent asks to run and say nothing else. If it asks a question, answer
+   `Make a reasonable assumption and continue.` and count it as an intervention. Do not edit a file, add an
+   instruction or point at a mistake. Stop the run at 60 minutes.
+6. When the agent stops, run `npm install`, `npm run typecheck`, `npm run build` and, when the agent left a
+   test script, `npm test`. Nothing is fixed by hand before the checks.
+7. Run `git add -A` and `git diff --cached --shortstat HEAD` for the size of the change.
+
+**The result.** One file per run, `evals/<YYYY-MM-DD>-<agent>-p<n>.md`, with `-2` appended for a second run
+of the same agent and prompt on the same day. The agent is `claude-code`, `codex` or `gemini-cli`.
+
+```markdown
+---
+agent: claude-code
+agentVersion: 2.1.283
+model: claude-opus-5-5
+date: 2026-09-26
+skillVersion: 0.3.1
+promptIndex: 1
+prompt: "Hide this whole site behind a PIN until launch. One environment variable turns it on, and search engines must not index anything while it is on."
+stack: No data store
+durationMinutes: 12
+interventions: 0
+checks:
+  typecheck: pass
+  build: pass
+  tests: none
+result: pass
+filesChanged: 9
+linesAdded: 412
+isolated: true
+timedOut: false
+---
+
+It wired the gate in proxy.ts and passed every check, but left the robots header off the unlock page.
+```
+
+- `checks` are `pass` or `fail`, and `tests` is `none` when the agent left no test script.
+- `result` is `pass` when every check that ran passed, `partial` when the app type-checks and builds but its
+  tests fail, and `fail` when it does not type-check or build, or the run reached the time limit
+  (`timedOut: true`).
+- `runUrl`, only on a run made by the workflow, links the GitHub Actions run that holds the agent's log.
+- `skillVersion` is the newest section of the installed `CHANGELOG.md`. `agentVersion` is what the agent's
+  `--version` prints, without the agent's name, and `model` the model the session used.
+- The frontmatter is what was measured and is not edited after the run. The body is written by the person
+  who ran it, after reading the whole session: the concrete gaps, such as a non-negotiable the agent broke, a
+  file it did not write or a test it skipped. It follows section 7, names no customer and does not praise.
+
+**When.** Before every release that changes a template, a reference or a non-negotiable: prompt 1 in at least
+one agent, and in all three for a MINOR or a MAJOR. A failing run is committed like a passing one; the fix is
+the next release, not a deleted file.
+
+**Automating the run.** The same run can be made by GitHub Actions on every published release, so a
+release never ships without its eval. Automation replaces the person in steps 3 to 7 and nothing else: the
+fixture, the prompt, the note, the checks, the result rule and the file are the ones above. It runs a coding
+agent with every permission on a hosted runner, so it is set up deliberately, by a maintainer, and never
+copied in by an agent editing a skill.
+
+1. **One harness, in this index.** `eval/run.mjs` takes `--skill-dir`, `--agent`, `--prompt` and
+   `--timeout`, does steps 1 to 7 with the agent in headless mode, and writes the result file into the
+   skill's `evals/`. `.github/workflows/agent-eval.yml` is a reusable workflow (`on: workflow_call`, inputs
+   `agent` and `prompt`) that checks out the calling skill and this index, installs Node 22, the harness
+   and the one agent under test, runs the harness, uploads the agent's full log as an artifact and commits
+   the result. The headless forms are `claude -p "<prompt>" --output-format json
+   --dangerously-skip-permissions`, `codex exec --sandbox danger-full-access "<prompt>"` after
+   `codex login --with-api-key`, and `gemini -p "<prompt>" --yolo`.
+2. **A short caller in each skill**, `.github/workflows/agent-eval.yml`, the same in every repository:
+
+   ```yaml
+   name: Agent eval
+   on:
+     release:
+       types: [published]
+     workflow_dispatch:
+       inputs:
+         agent: { type: choice, options: [claude-code, codex, gemini-cli], default: claude-code }
+         prompt: { type: number, default: 1 }
+   permissions:
+     contents: write
+   concurrency:
+     group: agent-eval
+     cancel-in-progress: false
+   jobs:
+     release:
+       if: github.event_name == 'release'
+       strategy:
+         fail-fast: false
+         max-parallel: 1
+         matrix:
+           agent: [claude-code, codex, gemini-cli]
+       uses: timerise-ai/skills/.github/workflows/agent-eval.yml@main
+       with: { agent: "${{ matrix.agent }}", prompt: 1 }
+       secrets: inherit
+     manual:
+       if: github.event_name == 'workflow_dispatch'
+       uses: timerise-ai/skills/.github/workflows/agent-eval.yml@main
+       with: { agent: "${{ inputs.agent }}", prompt: "${{ inputs.prompt }}" }
+       secrets: inherit
+   ```
+
+3. **Keys as organization secrets**: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, visible to the
+   public skill repositories. The reusable workflow skips an agent whose key is missing with a notice
+   rather than failing the release.
+4. **The rules the workflow keeps**, because the agent can read and run anything on the runner:
+   - It is triggered only by a published release or a maintainer's dispatch, never by `pull_request` or
+     `push`, so no outside contributor's text reaches an agent with keys.
+   - Both checkouts use `persist-credentials: false`. The `GITHUB_TOKEN` is set on the remote only in the
+     step after the agent has stopped, to push the result.
+   - Only the key of the agent under test is in that step's environment.
+   - The skill is checked out at `main`, not the tag, and the result is pushed to `main` with up to five
+     `git pull --rebase` retries, since the three agents of one release finish one after another.
+   - The job has `timeout-minutes` above the harness limit of 60, so a hung agent ends as `timedOut: true`
+     rather than a cancelled job with no file.
+5. **The result** is the file of this section with `isolated: true`, since a hosted runner carries no
+   operator's config, and a `runUrl` field linking the Actions run whose artifact holds the log. It is
+   committed as `chore(evals): <agent> on prompt <n>, <result>` by `github-actions[bot]`. The notes below the
+   frontmatter are still written by a person, who reads the log and adds them in a later commit.
+
+A workflow run is a run like any other: it counts for the release it followed, and its failures are
+published. Where automation is not set up, or an agent has no key, the run is made by hand.
+
+**Where results appear.** The skill's page on timerise.ai reads `evals/` and shows the prompts and the newest
+run per agent and prompt. This index copies every skill's results into `evals/<skill>/` and lists the newest
+run per skill and agent in [EVALS.md](EVALS.md). `.github/workflows/collect-evals.yml` regenerates both once
+a day and on demand, reading the public skill repositories and committing here with this repository's own
+token; neither file is edited by hand, and the skill repositories stay the authoritative copy.
+
+## 11. Publishing a new skill
 
 1. Create `timerise-ai/<name>`, public, default branch `main`, MIT license.
 2. Build the repository to sections 3 to 8. Run the defect audit on the earlier implementation before
-   writing templates, and write `provenance.md` as you go rather than afterwards.
-3. Review against the checklist in section 11.
+   writing templates, and write `provenance.md` as you go rather than afterwards. Write `evals/prompts.md`
+   and run the first eval of section 10 before the first release.
+3. Review against the checklist in section 12.
 4. Release `0.1.0` under section 9: changelog section, README version line, `chore(release): 0.1.0`,
    tag `v0.1.0`, push, GitHub Release.
 5. Add the skill to the index, in this repository, in every place that lists skills: the skills table with
    version, one-line summary and backend; the clone loop under *Manual install*; the activation examples;
    the slash-command list; and the layout table, if the skill keeps its seam or its provenance record
    somewhere other than the default files.
-6. Release the index: adding a skill is a MINOR; updating a version in the table is a PATCH.
+6. Release the index: adding a skill is a MINOR; updating a version in the table is a PATCH. `EVALS.md`
+   picks the skill up by itself once its `evals/` folder exists; its daily updates are not releases.
 
-## 11. Checklist
+## 12. Checklist
 
 Before a release, every line holds.
 
@@ -263,4 +433,7 @@ Before a release, every line holds.
   no defect count or failure story on the front door, and nothing that identifies a system, in the
   frontmatter description included.
 - The changelog section, the README version line and the tag agree.
+- For a skill that builds code, `evals/prompts.md` has two or three prompts, the first one buildable in a
+  fresh Next.js app, and the release was preceded by the evals section 10 asks for, committed whatever
+  their result.
 - No file mentions a tool or model as author, and no commit carries an attribution trailer.
