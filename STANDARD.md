@@ -313,6 +313,11 @@ It wired the gate in proxy.ts and passed every check, but left the robots header
 - `result` is `pass` when every check that ran passed, `partial` when the app type-checks and builds but its
   tests fail, and `fail` when it does not type-check or build, or the run reached the time limit
   (`timedOut: true`).
+- A run in which the agent did not work is not a result and writes no file: the agent exited with an error
+  of its own (an API or authentication error, a refusal to start in the folder) before changing anything.
+  The cause is fixed and the run repeated. An agent that ran and changed nothing is a result, and a `fail`.
+- `filesChanged` and `linesAdded` are measured when the agent stops, before the checks, so what the build
+  rewrites is not counted as the agent's work.
 - `runUrl`, only on a run made by the workflow, links the GitHub Actions run that holds the agent's log.
 - `skillVersion` is the newest section of the installed `CHANGELOG.md`. `agentVersion` is what the agent's
   `--version` prints, without the agent's name, and `model` the model the session used.
@@ -337,7 +342,7 @@ copied in by an agent editing a skill.
    and the one agent under test, runs the harness, uploads the agent's full log as an artifact and commits
    the result. The headless forms are `claude -p "<prompt>" --output-format json
    --dangerously-skip-permissions`, `codex exec --sandbox danger-full-access "<prompt>"` after
-   `codex login --with-api-key`, and `gemini -p "<prompt>" --yolo`.
+   `codex login --with-api-key`, and `gemini -p "<prompt>" --yolo --skip-trust`.
 2. **A short caller in each skill**, `.github/workflows/agent-eval.yml`, the same in every repository:
 
    ```yaml
@@ -374,7 +379,11 @@ copied in by an agent editing a skill.
 
 3. **Keys as organization secrets**: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, visible to the
    public skill repositories. The reusable workflow skips an agent whose key is missing with a notice
-   rather than failing the release.
+   rather than failing the release. An Anthropic key that belongs to the organization rather than to one
+   workspace, as a service account's key does, is refused unless each request names the workspace: set the
+   organization variable `ANTHROPIC_WORKSPACE_ID` to the workspace's ID from the Console, and the workflow
+   passes it to Claude Code as `ANTHROPIC_CUSTOM_HEADERS: anthropic-workspace-id: <id>`. A workspace-scoped
+   key needs neither.
 4. **The rules the workflow keeps**, because the agent can read and run anything on the runner:
    - It is triggered only by a published release or a maintainer's dispatch, never by `pull_request` or
      `push`, so no outside contributor's text reaches an agent with keys.
@@ -383,6 +392,10 @@ copied in by an agent editing a skill.
    - Only the key of the agent under test is in that step's environment.
    - The skill is checked out at `main`, not the tag, and the result is pushed to `main` with up to five
      `git pull --rebase` retries, since the three agents of one release finish one after another.
+   - The harness checks the agent's exit code and, for Claude Code, `is_error` in its JSON result. An agent
+     that did not work fails the job and writes no file, so the maintainer sees the cause in the log instead
+     of a `pass` scored on the untouched fixture.
+   - Gemini CLI runs with `--skip-trust`, since the temp folder is never a trusted one.
    - The job has `timeout-minutes` above the harness limit of 60, so a hung agent ends as `timedOut: true`
      rather than a cancelled job with no file.
 5. **The result** is the file of this section with `isolated: true`, since a hosted runner carries no

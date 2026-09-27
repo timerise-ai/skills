@@ -50,6 +50,7 @@ const AGENTS = {
           turns: out.num_turns ?? null,
           model: Object.keys(out.modelUsage ?? {}).join(", "),
           summary: out.result ?? "",
+          error: out.is_error ? String(out.result ?? "error") : "",
         };
       } catch {
         return {};
@@ -63,7 +64,7 @@ const AGENTS = {
   },
   "gemini-cli": {
     bin: "gemini",
-    args: (prompt) => ["-p", prompt, "--yolo"],
+    args: (prompt) => ["-p", prompt, "--yolo", "--skip-trust"],
     parse: (stdout) => ({ summary: stdout.slice(-4000) }),
   },
 };
@@ -265,6 +266,16 @@ async function main() {
     `exit ${agentRun.code}${agentRun.timedOut ? " (timed out)" : ""}\n\n${agentRun.stdout}\n\n--- stderr ---\n${agentRun.stderr}`,
   );
 
+  if (!agentRun.timedOut && (agentRun.code !== 0 || parsed.error)) {
+    const cause = parsed.error || agentRun.stderr.trim().split("\n").slice(-3).join(" ");
+    console.error(`${opts.agent} did not work (exit ${agentRun.code}): ${cause}\nNo result written. Log: ${logPath}`);
+    process.exit(1);
+  }
+
+  // Measured when the agent stops, so what the build rewrites is not counted as its work.
+  await run("git", ["add", "-A"], { cwd: dir });
+  const diff = shortstat((await run("git", ["diff", "--cached", "--shortstat", "HEAD"], { cwd: dir })).stdout);
+
   console.log("Checking the result…");
   // A fresh install, in case the agent added packages without installing them.
   await run("npm", ["install", "--no-audit", "--no-fund"], { cwd: dir });
@@ -275,10 +286,9 @@ async function main() {
     tests: (await hasTestScript(dir)) ? await outcome(["test"]) : "none",
   };
   const builds = checks.typecheck === "pass" && checks.build === "pass";
-  const result = !builds || agentRun.timedOut ? "fail" : checks.tests === "fail" ? "partial" : "pass";
-
-  await run("git", ["add", "-A"], { cwd: dir });
-  const diff = shortstat((await run("git", ["diff", "--cached", "--shortstat", "HEAD"], { cwd: dir })).stdout);
+  // An agent that ran and changed nothing built nothing, whatever the untouched fixture passes.
+  const result =
+    !builds || agentRun.timedOut || diff.files === 0 ? "fail" : checks.tests === "fail" ? "partial" : "pass";
 
   const date = new Date().toISOString().slice(0, 10);
   const record = {

@@ -97,6 +97,8 @@ jobs:
         if: steps.key.outputs.skip != 'true'
         env:
           ANTHROPIC_API_KEY: ${{ inputs.agent == 'claude-code' && secrets.ANTHROPIC_API_KEY || '' }}
+          # An organization-scoped key (a service account's) must name its workspace on every request.
+          ANTHROPIC_CUSTOM_HEADERS: "${{ inputs.agent == 'claude-code' && vars.ANTHROPIC_WORKSPACE_ID != '' && format('anthropic-workspace-id: {0}', vars.ANTHROPIC_WORKSPACE_ID) || '' }}"
           GEMINI_API_KEY: ${{ inputs.agent == 'gemini-cli' && secrets.GEMINI_API_KEY || '' }}
           PROMPT: ${{ inputs.prompt }}
           TIMEOUT: ${{ inputs.timeout-minutes }}
