@@ -5,6 +5,58 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] - 2026-09-27
+
+Agent evals: each skill release is now run through Claude Code, Codex CLI and
+Gemini CLI on a fresh Next.js app, and the results are collected here.
+
+### Added
+
+- The eval harness in `eval/`: a fresh Next.js App Router fixture, a runner
+  that installs one skill, starts one agent headless on one of the skill's
+  prompts, then type-checks, builds and tests the app and writes a result file
+  with what was measured.
+- `agent-eval.yml`, a reusable workflow each skill calls on release, and
+  `collect-evals.yml`, a daily job that gathers every skill's results into
+  `evals/` and regenerates `EVALS.md`.
+- `EVALS.md`, with one row per skill and agent: the model and reasoning
+  effort, the result, the three checks, the skill version, the prompt and a
+  link to the run. `site-pin-gate` 0.3.4 is the first skill in it.
+- STANDARD.md section 10 on agent evals: prompts, the run, the result file,
+  the model choice and the release workflow. Publishing and the checklist are
+  renumbered after it.
+- The harness takes `--model` and `--reasoning` (from the organization
+  variables `EVAL_MODEL_CLAUDE_CODE`, `EVAL_MODEL_CODEX`,
+  `EVAL_MODEL_GEMINI_CLI` and `EVAL_REASONING_CODEX`) and records the model
+  each agent reports, not the one it was asked for.
+
+### Eval models
+
+The models every skill's evals run on from this release, the same for each
+skill so results compare:
+
+- Claude Code: `claude-opus-5-5`
+- Codex CLI: `gpt-6-sol`, reasoning effort high
+- Gemini CLI: `gemini-3.8-flash`
+
+### Fixed
+
+- A run in which the agent never started, or stopped on an API error, is
+  failed with no result file instead of being scored on the untouched fixture;
+  an agent that changed nothing is scored a fail; the diff is measured before
+  the checks, so what the build rewrites is not counted.
+- `EVALS.md` shows the latest of several same-day runs; runs sort by date,
+  then by run number.
+- Gemini CLI's model is recorded as the one that did the work, not every model
+  its session touched.
+- The caller example in STANDARD.md passes the dispatched prompt through
+  `fromJSON`, as the reusable workflow's number input requires.
+
+### Changed
+
+- Eval workflows run on Node 24 actions and are pinned to `ubuntu-24.04`.
+- The skills table: `site-pin-gate` 0.3.4.
+
 ## [0.15.0] - 2026-09-25
 
 `ad-campaign-runbook` joins the index at its own `0.1.0`.
