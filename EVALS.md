@@ -1,17 +1,16 @@
 # Agent evals
 
-The newest agent eval of every skill that builds code, one row per skill and agent. A run installs the skill
-into an empty Next.js App Router app, gives the agent the first prompt in the skill's `evals/prompts.md` and
-no further help, then type-checks, builds and tests what the agent left. [STANDARD.md](STANDARD.md), section
-10, says how a run is made; each skill's `evals/` folder holds every run with the notes of the person who ran
-it.
+Each skill is run through coding agents on a fresh Next.js App Router app with only that skill
+installed: the agent gets one of the prompts in the skill's `evals/prompts.md`, works unattended,
+and the app is then type-checked, built and tested. Nothing is fixed by hand before the checks.
+The harness is [`eval/`](eval) and [`agent-eval.yml`](.github/workflows/agent-eval.yml); each skill
+runs it on every release. This file is regenerated from the skill repositories by
+[`collect-evals.yml`](.github/workflows/collect-evals.yml); the copies are in [`evals/`](evals).
 
-Checks are typecheck, build and tests: `pass`, `fail`, or `none` when the agent left no tests.
+Checks: typecheck / build / tests. ✓ passed, ✗ failed, – the agent left no tests.
 
-| Skill | Agent | Result | Checks | Skill version | Date |
-|---|---|---|---|---|---|
-
-No runs yet. Prompts are written for `blog-markdown`, `bookable-events`, `booking-kiosk`,
-`browser-extension-connector`, `digital-signage`, `ecommerce-process-mining`, `help-center-markdown`,
-`island-mode-server`, `ksef`, `ledger-wallet`, `site-pin-gate`, `slack-ai-bot`, `stripe-connect-subscriptions`
-and `visit-logger`.
+| Skill | Agent | Model | Result | Checks | Skill version | Prompt | Run |
+|---|---|---|---|---|---|---|---|
+| [`site-pin-gate`](https://github.com/timerise-ai/site-pin-gate) | Gemini CLI | `gemini-3.8-flash` | Built, checks pass | ✓ / ✓ / ✓ | 0.3.4 | 1 | [2026-09-27](https://github.com/timerise-ai/site-pin-gate/blob/main/evals/2026-09-27-gemini-cli-p1-4.md) |
+| [`site-pin-gate`](https://github.com/timerise-ai/site-pin-gate) | Codex CLI | `gpt-6-sol`, high | Built, checks pass | ✓ / ✓ / ✓ | 0.3.4 | 1 | [2026-09-27](https://github.com/timerise-ai/site-pin-gate/blob/main/evals/2026-09-27-codex-p1-4.md) |
+| [`site-pin-gate`](https://github.com/timerise-ai/site-pin-gate) | Claude Code | `claude-opus-5-5` | Built, checks pass | ✓ / ✓ / ✓ | 0.3.4 | 1 | [2026-09-27](https://github.com/timerise-ai/site-pin-gate/blob/main/evals/2026-09-27-claude-code-p1-4.md) |
