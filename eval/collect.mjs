@@ -69,10 +69,16 @@ async function mirror(repo, files) {
   return runs;
 }
 
-/** The newest run per agent: runs sorted newest first, first one wins. */
+/** The day's run number: `...-p1.md` is 1, `...-p1-2.md` is 2. Text order would put 1 after 2. */
+const runNumber = (file) => Number(file.match(/-p\d+-(\d+)\.md$/)?.[1] ?? 1);
+
+/** The newest run per agent: by date, then run number within the day; first one wins. */
 function latestPerAgent(runs) {
   const sorted = [...runs].sort(
-    (a, b) => String(b.date).localeCompare(String(a.date)) || b.file.localeCompare(a.file),
+    (a, b) =>
+      String(b.date).localeCompare(String(a.date)) ||
+      runNumber(b.file) - runNumber(a.file) ||
+      b.file.localeCompare(a.file),
   );
   const seen = new Set();
   return sorted.filter((run) => {
@@ -81,6 +87,10 @@ function latestPerAgent(runs) {
     return true;
   });
 }
+
+/** The model the run reports, with the reasoning effort when there is one. */
+const model = (run) =>
+  run.model ? `\`${run.model}\`${run.reasoningEffort ? `, ${run.reasoningEffort}` : ""}` : "not recorded";
 
 function summary(bySkill, waiting) {
   const lines = [
@@ -95,8 +105,8 @@ function summary(bySkill, waiting) {
     "",
     "Checks: typecheck / build / tests. ✓ passed, ✗ failed, – the agent left no tests.",
     "",
-    "| Skill | Agent | Result | Checks | Skill version | Prompt | Run |",
-    "|---|---|---|---|---|---|---|",
+    "| Skill | Agent | Model | Result | Checks | Skill version | Prompt | Run |",
+    "|---|---|---|---|---|---|---|---|",
   ];
   for (const [repo, runs] of bySkill) {
     for (const run of latestPerAgent(runs)) {
@@ -104,11 +114,11 @@ function summary(bySkill, waiting) {
       const marks = ["typecheck", "build", "tests"].map((k) => CHECK_MARKS[checks[k]] ?? "–").join(" / ");
       const link = `https://github.com/${ORG}/${repo}/blob/main/evals/${run.file}`;
       lines.push(
-        `| [\`${repo}\`](https://github.com/${ORG}/${repo}) | ${AGENT_NAMES[run.agent] ?? run.agent} | ${RESULT_LABELS[run.result] ?? run.result} | ${marks} | ${run.skillVersion ?? ""} | ${run.promptIndex ?? ""} | [${run.date}](${link}) |`,
+        `| [\`${repo}\`](https://github.com/${ORG}/${repo}) | ${AGENT_NAMES[run.agent] ?? run.agent} | ${model(run)} | ${RESULT_LABELS[run.result] ?? run.result} | ${marks} | ${run.skillVersion ?? ""} | ${run.promptIndex ?? ""} | [${run.date}](${link}) |`,
       );
     }
   }
-  if (bySkill.size === 0) lines.push("| – | – | No runs yet | – | – | – | – |");
+  if (bySkill.size === 0) lines.push("| – | – | – | No runs yet | – | – | – | – |");
   if (waiting.length > 0) {
     lines.push("", `Prompts written, not run yet: ${waiting.map((repo) => `\`${repo}\``).join(", ")}.`);
   }
