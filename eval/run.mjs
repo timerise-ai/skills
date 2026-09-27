@@ -38,10 +38,20 @@ No external services are reachable from here: read every credential from environ
 variables and do not require them at build time. When you finish, \`npm run typecheck\` and
 \`npm run build\` must pass, and if the skill ships tests, wire them to \`npm test\` so they run.`;
 
-const AGENTS = {
+/** The CLI flags that pin the model (and, for Codex, the reasoning effort); none when unset. */
+const modelFlag = (flag, opts) => (opts.model ? [flag, opts.model] : []);
+
+export const AGENTS = {
   "claude-code": {
     bin: "claude",
-    args: (prompt) => ["-p", prompt, "--output-format", "json", "--dangerously-skip-permissions"],
+    args: (prompt, opts) => [
+      "-p",
+      prompt,
+      "--output-format",
+      "json",
+      "--dangerously-skip-permissions",
+      ...modelFlag("--model", opts),
+    ],
     /** The JSON result carries turns and the models used. */
     parse(stdout) {
       try {
@@ -59,24 +69,59 @@ const AGENTS = {
   },
   codex: {
     bin: "codex",
-    args: (prompt) => ["exec", "--skip-git-repo-check", "--sandbox", "danger-full-access", prompt],
-    parse: (stdout) => ({ summary: stdout.slice(-4000) }),
+    args: (prompt, opts) => [
+      "exec",
+      "--skip-git-repo-check",
+      "--sandbox",
+      "danger-full-access",
+      ...modelFlag("-m", opts),
+      ...(opts.reasoning ? ["-c", `model_reasoning_effort="${opts.reasoning}"`] : []),
+      prompt,
+    ],
+    /** Codex prints its settings as a header on stderr: `model: ...`, `reasoning effort: ...`. */
+    parse: (stdout, stderr = "") => ({
+      model: stderr.match(/^model: (.+)$/m)?.[1]?.trim() ?? "",
+      reasoningEffort: stderr.match(/^reasoning effort: (.+)$/m)?.[1]?.trim() ?? "",
+      summary: stdout.slice(-4000),
+    }),
   },
   "gemini-cli": {
     bin: "gemini",
-    args: (prompt) => ["-p", prompt, "--yolo", "--skip-trust"],
-    parse: (stdout) => ({ summary: stdout.slice(-4000) }),
+    args: (prompt, opts) => ["-p", prompt, "--yolo", "--skip-trust", "-o", "json", ...modelFlag("-m", opts)],
+    /** The JSON output names every model the session used under stats.models. */
+    parse(stdout) {
+      try {
+        const out = JSON.parse(stdout.slice(stdout.indexOf("{")));
+        return {
+          model: Object.keys(out.stats?.models ?? {}).join(", "),
+          summary: String(out.response ?? ""),
+          error: out.error ? String(out.error.message ?? JSON.stringify(out.error)) : "",
+        };
+      } catch {
+        return { summary: stdout.slice(-4000) };
+      }
+    },
   },
 };
 
 function parseArgs(argv) {
-  const opts = { agent: "claude-code", prompt: 1, timeoutMinutes: 60, dryRun: false, log: "" };
+  const opts = {
+    agent: "claude-code",
+    prompt: 1,
+    timeoutMinutes: 60,
+    dryRun: false,
+    log: "",
+    model: process.env.EVAL_MODEL ?? "",
+    reasoning: process.env.EVAL_REASONING ?? "",
+  };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--skill-dir") opts.skillDir = path.resolve(argv[++i]);
     else if (arg === "--agent") opts.agent = argv[++i];
     else if (arg === "--prompt") opts.prompt = Number(argv[++i]);
     else if (arg === "--timeout") opts.timeoutMinutes = Number(argv[++i]);
+    else if (arg === "--model") opts.model = argv[++i];
+    else if (arg === "--reasoning") opts.reasoning = argv[++i];
     else if (arg === "--log") opts.log = path.resolve(argv[++i]);
     else if (arg === "--dry-run") opts.dryRun = true;
   }
@@ -177,7 +222,7 @@ async function main() {
   const agent = AGENTS[opts.agent];
   if (!opts.skillDir || !agent) {
     console.error(
-      `Usage: node run.mjs --skill-dir <path> [--agent ${Object.keys(AGENTS).join("|")}] [--prompt n] [--timeout minutes] [--log file] [--dry-run]`,
+      `Usage: node run.mjs --skill-dir <path> [--agent ${Object.keys(AGENTS).join("|")}] [--prompt n] [--timeout minutes] [--model id] [--reasoning effort] [--log file] [--dry-run]`,
     );
     process.exit(1);
   }
@@ -253,13 +298,13 @@ async function main() {
 
   console.log(`Running ${opts.agent} ${agentVersion} on prompt ${opts.prompt}…`);
   const started = Date.now();
-  const agentRun = await run(agent.bin, agent.args(`${prompt}${HARNESS_NOTE}`), {
+  const agentRun = await run(agent.bin, agent.args(`${prompt}${HARNESS_NOTE}`, opts), {
     cwd: dir,
     env,
     timeoutMs: opts.timeoutMinutes * 60_000,
   });
   const durationMinutes = Math.round((Date.now() - started) / 60_000);
-  const parsed = agent.parse(agentRun.stdout);
+  const parsed = agent.parse(agentRun.stdout, agentRun.stderr);
   const logPath = opts.log || `${dir}-agent.log`;
   await writeFile(
     logPath,
@@ -294,7 +339,11 @@ async function main() {
   const record = {
     agent: opts.agent,
     agentVersion,
-    model: parsed.model ?? "",
+    // What the agent reports it ran on; the pinned value when it reports nothing.
+    model: parsed.model || opts.model || "",
+    ...(parsed.reasoningEffort || opts.reasoning
+      ? { reasoningEffort: parsed.reasoningEffort || opts.reasoning }
+      : {}),
     date,
     skillVersion,
     promptIndex: opts.prompt,

@@ -288,6 +288,7 @@ of the same agent and prompt on the same day. The agent is `claude-code`, `codex
 agent: claude-code
 agentVersion: 2.1.283
 model: claude-opus-5-5
+reasoningEffort: high
 date: 2026-09-26
 skillVersion: 0.3.1
 promptIndex: 1
@@ -320,7 +321,14 @@ It wired the gate in proxy.ts and passed every check, but left the robots header
   rewrites is not counted as the agent's work.
 - `runUrl`, only on a run made by the workflow, links the GitHub Actions run that holds the agent's log.
 - `skillVersion` is the newest section of the installed `CHANGELOG.md`. `agentVersion` is what the agent's
-  `--version` prints, without the agent's name, and `model` the model the session used.
+  `--version` prints, without the agent's name. `model` is the model the session reports it used, and
+  `reasoningEffort` the effort it reports, when the agent reports one; a value that was only requested and
+  never confirmed by the agent is written as requested.
+- **The model is chosen, not inherited.** Each agent is started on a named model, the same one for every
+  skill, so results compare across skills and releases: Claude Code with `--model`, Codex CLI with `-m` and
+  `-c model_reasoning_effort="<effort>"`, Gemini CLI with `-m`. A CLI's default changes under you between
+  versions and can be a low-effort setting. Moving to a new model is a decision recorded in the index
+  changelog, and the next release of each skill runs on it.
 - The frontmatter is what was measured and is not edited after the run. The body is written by the person
   who ran it, after reading the whole session: the concrete gaps, such as a non-negotiable the agent broke, a
   file it did not write or a test it skipped. It follows section 7, names no customer and does not praise.
@@ -335,14 +343,16 @@ fixture, the prompt, the note, the checks, the result rule and the file are the 
 agent with every permission on a hosted runner, so it is set up deliberately, by a maintainer, and never
 copied in by an agent editing a skill.
 
-1. **One harness, in this index.** `eval/run.mjs` takes `--skill-dir`, `--agent`, `--prompt` and
-   `--timeout`, does steps 1 to 7 with the agent in headless mode, and writes the result file into the
+1. **One harness, in this index.** `eval/run.mjs` takes `--skill-dir`, `--agent`, `--prompt`,
+   `--timeout`, `--model` and `--reasoning`, does steps 1 to 7 with the agent in headless mode, and writes the result file into the
    skill's `evals/`. `.github/workflows/agent-eval.yml` is a reusable workflow (`on: workflow_call`, inputs
    `agent` and `prompt`) that checks out the calling skill and this index, installs Node 22, the harness
    and the one agent under test, runs the harness, uploads the agent's full log as an artifact and commits
    the result. The headless forms are `claude -p "<prompt>" --output-format json
    --dangerously-skip-permissions`, `codex exec --sandbox danger-full-access "<prompt>"` after
-   `codex login --with-api-key`, and `gemini -p "<prompt>" --yolo --skip-trust`.
+   `codex login --with-api-key`, and `gemini -p "<prompt>" --yolo --skip-trust -o json`. Claude Code and
+   Gemini CLI report the model in their JSON output; Codex CLI prints it, with the reasoning effort, in the
+   header it writes to stderr.
 2. **A short caller in each skill**, `.github/workflows/agent-eval.yml`, the same in every repository:
 
    ```yaml
@@ -378,14 +388,18 @@ copied in by an agent editing a skill.
        secrets: inherit
    ```
 
-3. **Keys as organization secrets**: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, visible to the
+3. **Models as organization variables**: `EVAL_MODEL_CLAUDE_CODE`, `EVAL_MODEL_CODEX`,
+   `EVAL_MODEL_GEMINI_CLI`, and `EVAL_REASONING_CODEX` for the Codex effort. The workflow passes the ones for
+   the agent under test as `EVAL_MODEL` and `EVAL_REASONING`, and the harness hands them to the CLI. An unset
+   variable leaves the CLI's default, which the result then records as whatever the agent reports.
+4. **Keys as organization secrets**: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, visible to the
    public skill repositories. The reusable workflow skips an agent whose key is missing with a notice
    rather than failing the release. An Anthropic key that belongs to the organization rather than to one
    workspace, as a service account's key does, is refused unless each request names the workspace: set the
    organization variable `ANTHROPIC_WORKSPACE_ID` to the workspace's ID from the Console, and the workflow
    passes it to Claude Code as `ANTHROPIC_CUSTOM_HEADERS: anthropic-workspace-id: <id>`. A workspace-scoped
    key needs neither.
-4. **The rules the workflow keeps**, because the agent can read and run anything on the runner:
+5. **The rules the workflow keeps**, because the agent can read and run anything on the runner:
    - It is triggered only by a published release or a maintainer's dispatch, never by `pull_request` or
      `push`, so no outside contributor's text reaches an agent with keys.
    - Both checkouts use `persist-credentials: false`. The `GITHUB_TOKEN` is set on the remote only in the
@@ -399,7 +413,7 @@ copied in by an agent editing a skill.
    - Gemini CLI runs with `--skip-trust`, since the temp folder is never a trusted one.
    - The job has `timeout-minutes` above the harness limit of 60, so a hung agent ends as `timedOut: true`
      rather than a cancelled job with no file.
-5. **The result** is the file of this section with `isolated: true`, since a hosted runner carries no
+6. **The result** is the file of this section with `isolated: true`, since a hosted runner carries no
    operator's config, and a `runUrl` field linking the Actions run whose artifact holds the log. It is
    committed as `chore(evals): <agent> on prompt <n>, <result>` by `github-actions[bot]`. The notes below the
    frontmatter are still written by a person, who reads the log and adds them in a later commit.

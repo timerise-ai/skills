@@ -102,6 +102,9 @@ jobs:
           GEMINI_API_KEY: ${{ inputs.agent == 'gemini-cli' && secrets.GEMINI_API_KEY || '' }}
           PROMPT: ${{ inputs.prompt }}
           TIMEOUT: ${{ inputs.timeout-minutes }}
+          # The model each agent runs on, pinned per agent by organization variables; unset is the CLI default.
+          EVAL_MODEL: "${{ inputs.agent == 'claude-code' && vars.EVAL_MODEL_CLAUDE_CODE || inputs.agent == 'codex' && vars.EVAL_MODEL_CODEX || inputs.agent == 'gemini-cli' && vars.EVAL_MODEL_GEMINI_CLI || '' }}"
+          EVAL_REASONING: "${{ inputs.agent == 'codex' && vars.EVAL_REASONING_CODEX || '' }}"
         run: |
           node harness/eval/run.mjs --skill-dir skill --agent "$AGENT" --prompt "$PROMPT" \
             --timeout "$TIMEOUT" --log "$RUNNER_TEMP/agent.log"
