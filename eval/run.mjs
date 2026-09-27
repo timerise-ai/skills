@@ -41,6 +41,16 @@ variables and do not require them at build time. When you finish, \`npm run type
 /** The CLI flags that pin the model (and, for Codex, the reasoning effort); none when unset. */
 const modelFlag = (flag, opts) => (opts.model ? [flag, opts.model] : []);
 
+/**
+ * Gemini CLI lists every model a session touched under stats.models, each with the roles it served. The
+ * work is done by the `main` role; helpers such as `utility_loop_detector` are not the model under test.
+ */
+const mainModels = (models) => {
+  const names = Object.keys(models);
+  const main = names.filter((name) => Object.keys(models[name]?.roles ?? {}).includes("main"));
+  return (main.length > 0 ? main : names).join(", ");
+};
+
 export const AGENTS = {
   "claude-code": {
     bin: "claude",
@@ -93,7 +103,7 @@ export const AGENTS = {
       try {
         const out = JSON.parse(stdout.slice(stdout.indexOf("{")));
         return {
-          model: Object.keys(out.stats?.models ?? {}).join(", "),
+          model: mainModels(out.stats?.models ?? {}),
           summary: String(out.response ?? ""),
           error: out.error ? String(out.error.message ?? JSON.stringify(out.error)) : "",
         };
