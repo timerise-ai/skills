@@ -373,7 +373,8 @@ copied in by an agent editing a skill.
      manual:
        if: github.event_name == 'workflow_dispatch'
        uses: timerise-ai/skills/.github/workflows/agent-eval.yml@main
-       with: { agent: "${{ inputs.agent }}", prompt: "${{ inputs.prompt }}" }
+       # A dispatch input arrives as a string; the reusable workflow's prompt is a number.
+       with: { agent: "${{ inputs.agent }}", prompt: "${{ fromJSON(inputs.prompt) }}" }
        secrets: inherit
    ```
 
