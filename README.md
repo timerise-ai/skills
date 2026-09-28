@@ -37,6 +37,7 @@ skills-compatible agent can build on the same parts.
 | [`ksef`](https://github.com/timerise-ai/ksef) | 1.2.5 | KSeF API 2.0 integration for Poland's mandatory e-invoicing: token auth, invoice encryption, interactive and batch sending, UPO receipts, purchase-invoice sync, QR codes | Postgres (Neon/Supabase) on Vercel |
 | [`ledger-wallet`](https://github.com/timerise-ai/ledger-wallet) | 0.1.1 | Customer wallet as an append-only ledger with a balance per currency: Stripe Checkout top-ups, orders paid from the wallet, by card or split between them, a hold on the balance part until the card pays, refunds to source, staff adjustments with a reason, every movement keyed by a ref so a retry replays | Firestore or Postgres behind a store seam, one conformance suite for both |
 | [`site-pin-gate`](https://github.com/timerise-ai/site-pin-gate) | 0.3.4 | Shared-PIN gate in front of a whole site from the proxy or middleware layer: one env var arms it, an unlock page sets an HMAC cookie, origin-resolved return path, attempt budget answering 429 | No data store, one cookie and an attempt store behind a seam |
+| [`skill-eval-loop`](https://github.com/timerise-ai/skill-eval-loop) | 0.1.1 | For skill maintainers: a skill hardened from its automatic agent evals, each run scored against a fixed fidelity rubric read from the agent's log, each deviation fixed at its root cause in the skill, a patch release per round, repeated until every agent scores full | No data store, the target skill's repository and its eval runs via the `gh` CLI |
 | [`slack-ai-bot`](https://github.com/timerise-ai/slack-ai-bot) | 0.1.1 | Two-way Slack AI bot: mentions, DMs and thread follow-ups answered by a model with tools scoped to the asking user, app-initiated reports, Approve and Cancel buttons whose click runs the side effect exactly once, raw-body signature verification, 3-second ack | Backend-agnostic `BotHost` seam, Postgres/Supabase and in-memory stores |
 | [`stripe-connect-subscriptions`](https://github.com/timerise-ai/stripe-connect-subscriptions) | 0.1.8 | Stripe Connect marketplace settlement and platform subscription billing: split charges, escrow and reserves, account onboarding, off-session billing with dunning, ledger reconciliation | Backend-agnostic store adapter |
 | [`visit-logger`](https://github.com/timerise-ai/visit-logger) | 0.1.2 | Server-side log of who opened a shared resource, from where and on what: a page-view filter that drops prefetches and Server Actions, bot detection past the framework's list, edge geolocation, NULL-safe repeat-visitor matching, sittings, first-open announcements, admin panels | Postgres/Supabase or Firestore behind a `VisitStore` seam |
@@ -86,6 +87,7 @@ for skill in \
   ksef \
   ledger-wallet \
   site-pin-gate \
+  skill-eval-loop \
   slack-ai-bot \
   stripe-connect-subscriptions \
   visit-logger; do
@@ -106,10 +108,11 @@ the site taking bookings when the internet drops", "hide the staging site behind
 when the customer opens the proposal link", "let the team ask our Slack bot about a booking", "get data out of
 a site that has no API", "write down how the back office really handles returns", "why is this invoice
 rejected with a 430", "let customers top up a balance and pay with it", "why is the connected account never
-funded". It can also be invoked explicitly with its slash command (`/ad-campaign-runbook`, `/blog-markdown`,
-`/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`, `/digital-signage`,
-`/ecommerce-process-mining`, `/help-center-markdown`, `/island-mode-server`, `/ksef`, `/ledger-wallet`,
-`/site-pin-gate`, `/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
+funded", "fix the skill based on its last evals". It can also be invoked explicitly with its slash command
+(`/ad-campaign-runbook`, `/blog-markdown`, `/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`,
+`/digital-signage`, `/ecommerce-process-mining`, `/help-center-markdown`, `/island-mode-server`, `/ksef`,
+`/ledger-wallet`, `/site-pin-gate`, `/skill-eval-loop`, `/slack-ai-bot`, `/stripe-connect-subscriptions`,
+`/visit-logger`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
 rather than assuming it fired. The **non-negotiables** each skill names are where models diverge most, so
