@@ -22,3 +22,8 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/site-pin-gate/actions/runs/36334483216
 ---
+
+Rubric 8/8. The templates and both test files were copied unchanged, vitest was installed and runs 36 tests,
+the matcher is the default, `.env.example` lists the three variables and is un-ignored, and the handover
+says an unset `SITE_PIN` is an open site and that `SITE_GATE_SECRET` belongs beside it. It also sets
+`noindex` on unlocked responses, which the skill allows.
