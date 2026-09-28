@@ -149,7 +149,8 @@ Sections in this order; optional ones are marked.
 
 1. **Title**: `# <name>`.
 2. **Badges**, one line each: Agent Skills open format, skills.sh `npx skills add`, Claude Code compatible,
-   Codex CLI compatible, Gemini CLI compatible. Copy them from an existing skill.
+   Codex CLI compatible, Gemini CLI compatible. Copy them from an existing skill. Then, once the skill has
+   eval results, one eval badge per agent in the same order, as section 10, *Eval badges*, describes.
 3. **Intro**: one paragraph stating what the skill teaches an agent to build and for which framework; one
    paragraph with the insight the whole design turns on, in bold; one paragraph on origin in the words of
    section 2: who wrote it, the kind of module the earlier implementation was, and the properties the
@@ -439,6 +440,21 @@ run per skill and agent in [EVALS.md](EVALS.md). `.github/workflows/collect-eval
 a day and on demand, reading the public skill repositories and committing here with this repository's own
 token; neither file is edited by hand, and the skill repositories stay the authoritative copy.
 
+**Eval badges.** The README carries one badge per agent, under the compatibility badges, showing the newest
+run of prompt 1 for that agent. The label is `eval` and the model from the run's frontmatter; the message is
+its `result`, followed by the rubric score when the notes give one; the badge links the result file. Colour
+`059669` for `pass`, `d97706` for `partial`, `dc2626` for `fail`. Dashes in a shields.io static badge are
+doubled, a space is an underscore and a slash is `%2F`:
+
+```markdown
+[![Eval claude-opus-5-5](https://img.shields.io/badge/eval_claude--opus--5--5-pass_8%2F8-059669)](evals/2026-09-28-claude-code-p1-4.md)
+```
+
+The badges are typed into the README and do not update themselves. **After every eval, update them in the
+same commit that adds the run's notes**: point each badge at the agent's newest result file, and change the
+model, result and score to that run's. A failing run replaces a passing badge like any other; a badge is never
+kept at an older, better run. The commit is `chore(evals): ...` and causes no bump, like the result itself.
+
 ## 11. Publishing a new skill
 
 1. Create `timerise-ai/<name>`, public, default branch `main`, MIT license.
@@ -476,5 +492,6 @@ Before a release, every line holds.
 - `evals/prompts.md` has two or three prompts: for a skill that builds code the first is buildable in a
   fresh Next.js app, and for one that builds none each names the public target it works on. The release was
   preceded by the evals section 10 asks for, committed whatever their result.
+- The README's eval badges point at the newest prompt 1 result per agent and show its model and result.
 - `.github/workflows/agent-eval.yml` is the caller of section 10, verbatim.
 - No file mentions a tool or model as author, and no commit carries an attribution trailer.
