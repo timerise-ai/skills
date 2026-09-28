@@ -2,7 +2,9 @@
 
 This is the specification every Timerise skill follows and the practice behind it. A new skill is listed in
 the index when it meets this standard; an existing skill that drifts from it is brought back before its next
-release. It is written for the engineer building a skill, and for an agent asked to build or review one.
+release. Every section applies to every skill, new or existing, whether it builds code or not; a skill is
+not listed with a section waived. It is written for the engineer building a skill, and for an agent asked to
+build or review one.
 
 ## 1. What a skill is
 
@@ -84,9 +86,9 @@ in the repository has to read that way, to a person and to a tool summarising it
 | `references/adaptation.md` | yes, or stated substitute | The seam contract with the host app and the non-negotiables. A skill may keep the seam in `SKILL.md` or its architecture reference instead; `SKILL.md` then says so |
 | `references/provenance.md` | yes, or stated substitute | The audit record of section 2. An integration skill written from a vendor specification may keep this record in `CHANGELOG.md`; `README.md` then says so |
 | `assets/` | optional | Runnable files a reference points at rather than inlines: example scripts, a test suite carried into the target project |
-| `evals/prompts.md` | yes, when the skill builds code | The prompts an operator types after installing, which the agent evals of section 10 run |
+| `evals/prompts.md` | yes | The prompts an operator types after installing, which the agent evals of section 10 run |
 | `evals/<date>-<agent>-p<n>.md` | after an eval | One file per agent eval run: what was measured, then what the person who ran it saw |
-| `.github/workflows/agent-eval.yml` | optional | The caller of this index's eval workflow, set up by a maintainer under section 10, *Automating the run* |
+| `.github/workflows/agent-eval.yml` | yes | The caller of this index's eval workflow, copied verbatim from section 10, *Automating the run* |
 
 The repository name, the `name` in the `SKILL.md` frontmatter, the README title and the slash command are the
 same kebab-case string.
@@ -159,8 +161,8 @@ Sections in this order; optional ones are marked.
 5. `## Activation`: the tasks and phrases that activate the skill automatically, and the explicit
    invocation in each host: `/<name>` in Claude Code, `$<name>` in Codex CLI, `/skills` in Gemini CLI. Say
    that each host matches its own way and that a first run should invoke explicitly.
-6. `## What's inside`: the file table, one row per file in the repository and one for `evals/`, then a
-   paragraph on where the seam lives and what it bounds.
+6. `## What's inside`: the file table, one row per file in the repository, one for `evals/` and one for the
+   eval workflow, then a paragraph on where the seam lives and what it bounds.
 7. `## The N non-negotiables`: a numbered list, each item a bold rule followed by the reason it holds and
    what verifies it. The same list as `SKILL.md`. Close with the sentence that everything else is the host app's.
 8. Optional, as the module needs: `## Adaptation`, `## Requirements`, `## Security`, `## Verification`,
@@ -203,7 +205,8 @@ Written for an agent editing the skill repository itself. Three sections.
 - **What this repository is**: a skill package, markdown only, nothing executes here; the commands and code
   in `references/` describe the generated app, not this repository; where the skill came from and that
   `provenance.md` is the rationale layer.
-- **Structure**: what each file carries, in a few bullets, `evals/` included.
+- **Structure**: what each file carries, in a few bullets, `evals/` and the eval workflow included, the
+  workflow marked as copied verbatim and never edited.
 - **Editing conventions**: code blocks name their destination; identifiers are shared across files; keep the
   reference directory in `SKILL.md`, the quick start in `SKILL.md` and the file table in `README.md` in sync;
   the odd-looking parts stay; measured numbers are load-bearing; additions are marked as additions; the
@@ -256,6 +259,13 @@ skill's vocabulary. `stack` names the backend the prompt asks for, when it asks 
 builds in a fresh Next.js app with no external service; the others may extend, audit or debug. Prompts are
 numbered from 1 in the order they appear and a result quotes its prompt, so a prompt that has results is not
 reworded: add a new one instead.
+
+**A skill that builds no code** has prompts and evals like any other. Each prompt names what the skill works
+on and the fixture lacks: a public repository to clone, a public page, a file whose content the prompt
+carries. The checks then only confirm the agent left the app intact, so the result is read from the notes,
+which score the run against the skill's hard rules. The unattended note is the same for every skill, so a
+skill that needs a public clone or page says in its `SKILL.md` that neither is an external service in the
+note's sense.
 
 **The run.** In this order.
 
@@ -337,23 +347,25 @@ It wired the gate in proxy.ts and passed every check, but left the robots header
 one agent, and in all three for a MINOR or a MAJOR. A failing run is committed like a passing one; the fix is
 the next release, not a deleted file.
 
-**Automating the run.** The same run can be made by GitHub Actions on every published release, so a
+**Automating the run.** Every skill makes the same run with GitHub Actions on every published release, so a
 release never ships without its eval. Automation replaces the person in steps 3 to 7 and nothing else: the
 fixture, the prompt, the note, the checks, the result rule and the file are the ones above. It runs a coding
-agent with every permission on a hosted runner, so it is set up deliberately, by a maintainer, and never
-copied in by an agent editing a skill.
+agent with every permission on a hosted runner, so the parts that carry that power stay with a maintainer:
+the reusable workflow and the harness in this index, the keys and the model variables. The caller in each
+skill holds no secret and runs only on a published release or a maintainer's dispatch; an agent adding it
+copies it verbatim from item 2 and never edits it or adds a trigger.
 
 1. **One harness, in this index.** `eval/run.mjs` takes `--skill-dir`, `--agent`, `--prompt`,
-   `--timeout`, `--model` and `--reasoning`, does steps 1 to 7 with the agent in headless mode, and writes the result file into the
-   skill's `evals/`. `.github/workflows/agent-eval.yml` is a reusable workflow (`on: workflow_call`, inputs
-   `agent` and `prompt`) that checks out the calling skill and this index, installs Node 22, the harness
-   and the one agent under test, runs the harness, uploads the agent's full log as an artifact and commits
-   the result. The headless forms are `claude -p "<prompt>" --output-format json
-   --dangerously-skip-permissions`, `codex exec --sandbox danger-full-access "<prompt>"` after
+   `--timeout`, `--model` and `--reasoning`, does steps 1 to 7 with the agent in headless mode, and writes
+   the result file into the skill's `evals/`. `.github/workflows/agent-eval.yml` is a reusable workflow
+   (`on: workflow_call`, inputs `agent` and `prompt`) that checks out the calling skill and this index,
+   installs Node 22, the harness and the one agent under test, runs the harness, uploads the agent's full
+   log as an artifact and commits the result. The headless forms are `claude -p "<prompt>"
+   --output-format json --dangerously-skip-permissions`, `codex exec --sandbox danger-full-access "<prompt>"` after
    `codex login --with-api-key`, and `gemini -p "<prompt>" --yolo --skip-trust -o json`. Claude Code and
    Gemini CLI report the model in their JSON output; Codex CLI prints it, with the reasoning effort, in the
    header it writes to stderr.
-2. **A short caller in each skill**, `.github/workflows/agent-eval.yml`, the same in every repository:
+2. **A short caller in every skill**, `.github/workflows/agent-eval.yml`, the same in every repository:
 
    ```yaml
    name: Agent eval
@@ -419,7 +431,7 @@ copied in by an agent editing a skill.
    frontmatter are still written by a person, who reads the log and adds them in a later commit.
 
 A workflow run is a run like any other: it counts for the release it followed, and its failures are
-published. Where automation is not set up, or an agent has no key, the run is made by hand.
+published. Where an agent has no key, its run is made by hand.
 
 **Where results appear.** The skill's page on timerise.ai reads `evals/` and shows the prompts and the newest
 run per agent and prompt. This index copies every skill's results into `evals/<skill>/` and lists the newest
@@ -432,7 +444,7 @@ token; neither file is edited by hand, and the skill repositories stay the autho
 1. Create `timerise-ai/<name>`, public, default branch `main`, MIT license.
 2. Build the repository to sections 3 to 8. Run the defect audit on the earlier implementation before
    writing templates, and write `provenance.md` as you go rather than afterwards. Write `evals/prompts.md`
-   and run the first eval of section 10 before the first release.
+   and copy the caller of section 10, *Automating the run*; the first release then runs the first eval.
 3. Review against the checklist in section 12.
 4. Release `0.1.0` under section 9: changelog section, README version line, `chore(release): 0.1.0`,
    tag `v0.1.0`, push, GitHub Release.
@@ -461,7 +473,8 @@ Before a release, every line holds.
   no defect count or failure story on the front door, and nothing that identifies a system, in the
   frontmatter description included.
 - The changelog section, the README version line and the tag agree.
-- For a skill that builds code, `evals/prompts.md` has two or three prompts, the first one buildable in a
-  fresh Next.js app, and the release was preceded by the evals section 10 asks for, committed whatever
-  their result.
+- `evals/prompts.md` has two or three prompts: for a skill that builds code the first is buildable in a
+  fresh Next.js app, and for one that builds none each names the public target it works on. The release was
+  preceded by the evals section 10 asks for, committed whatever their result.
+- `.github/workflows/agent-eval.yml` is the caller of section 10, verbatim.
 - No file mentions a tool or model as author, and no commit carries an attribution trailer.
