@@ -23,3 +23,10 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/ecommerce-process-mining/actions/runs/36558691743
 ---
+
+Rubric 8/8, scored from the final summary. The nine suites run as written under vitest, 76 cases plus 7 of
+its own; `screenshot.ts` and its suite ship unused; the allowlist lives in `PM_ALLOWED_EXTENSION_IDS`; and the
+summary ends with the pinned id, the browser trial and the legal basis. The stricter privacy it lists (query
+values, titles and typed text dropped) is described as host behaviour, not template edits, and was not
+rerun. Its example file is `env.example`, because the starter's `.gitignore` ignores `.env*`; it is tracked
+and empty, so item 6 holds.
