@@ -88,9 +88,8 @@ function latestPerAgent(runs) {
   });
 }
 
-/** The model the run reports, with the reasoning effort when there is one. */
-const model = (run) =>
-  run.model ? `\`${run.model}\`${run.reasoningEffort ? `, ${run.reasoningEffort}` : ""}` : "not recorded";
+/** The model the run reports; the reasoning effort stays in the run's own file. */
+const model = (run) => (run.model ? `\`${run.model}\`` : "not recorded");
 
 function summary(bySkill, waiting) {
   const lines = [
