@@ -469,7 +469,7 @@ kept at an older, better run. The commit is `chore(evals): ...` and causes no bu
    the slash-command list; and the layout table, if the skill keeps its seam or its provenance record
    somewhere other than the default files.
 6. Release the index: adding a skill is a MINOR; updating a version in the table is a PATCH. `EVALS.md`
-   picks the skill up by itself once its `evals/` folder exists; its daily updates are not releases.
+   picks the skill up by itself once its `evals/` folder exists; its weekly updates are not releases.
 
 ## 12. Checklist
 
