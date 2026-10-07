@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-10-07
+
+`invoicing` joins the index at its own `0.1.2` and `linkedin-boost` at its own
+`0.1.3`.
+
+### Added
+
+- `invoicing` in the skills table, the all-skills clone loop, the activation
+  examples and the slash-command list: VAT invoicing with gapless numbering per
+  series and year stamped inside the insert, invoices issued standalone or from
+  a sale, correcting invoices with signed deltas, seller and buyer snapshots,
+  immutability after issue, a register, an A4 PDF from a dependency-free
+  writer, and an optional bridge to KSeF through the `ksef` skill. Postgres or
+  in-memory behind a store seam, e-invoicing behind a port.
+- `linkedin-boost` in the same four places: a runbook for boosting one LinkedIn
+  Company Page post that promotes a blog post, with a lifetime budget sized to
+  the run, the image, post text and first comment with the link, founder
+  reposts and network DMs, the Campaign Manager build the Boost button hides, a
+  named person on every task, weekly decision rules and a date cascade when the
+  publish date moves. No data store; people, conversion vocabulary and
+  languages behind a seam.
+
 ## [0.17.0] - 2026-10-07
 
 `in-app-bug-reports` joins the index at its own `0.1.0`.
