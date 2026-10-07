@@ -34,6 +34,7 @@ skills-compatible agent can build on the same parts.
 | [`ecommerce-process-mining`](https://github.com/timerise-ai/ecommerce-process-mining) | 0.1.2 | Employee process mining for an e-commerce back office: a consented MV3 extension reading DOM events rather than pixels, a gap-capture form, an ingest route that scrubs before it stores, a batch AI pipeline writing per-role SOPs and a ranked automation shortlist | Postgres/Supabase with row-level security, or Firestore |
 | [`help-center-markdown`](https://github.com/timerise-ai/help-center-markdown) | 0.2.9 | Markdown-backed help center: category, tag and article pages, ranked client-side search, locale fallback, JSON-LD, sitemap, CI content validator | Repository files, no CMS |
 | [`in-app-bug-reports`](https://github.com/timerise-ai/in-app-bug-reports) | 0.1.0 | In-app bug reports filed as GitHub issues: reports with markdown and attachments saved under tenant policies first and delivered through an outbox with marker de-duplication, the issue's state mirrored back as the report's status, `/reply` comments as the only team replies a member sees, attachments that stay private behind sign-in, an operator view across tenants with bridge health, an assistant tool that drafts a report the member sends | Postgres/Supabase with row-level security behind a `BugReportsHost` seam; GitHub behind an `IssueTracker` seam |
+| [`invoicing`](https://github.com/timerise-ai/invoicing) | 0.1.1 | VAT invoicing: gapless numbering per series and year stamped inside the insert, invoices issued standalone or from a sale, correcting invoices with signed deltas, seller and buyer snapshots, immutability after issue, a register, an A4 PDF from a dependency-free writer, an optional bridge to KSeF through the `ksef` skill | Postgres or in-memory behind a store seam; e-invoicing behind a port |
 | [`island-mode-server`](https://github.com/timerise-ai/island-mode-server) | 0.1.5 | On-premise fallback server: live RxDB replica of a site's Firestore slice, LAN takeover when the internet drops, idempotent reconnect flush, HMAC hardware auth | Firestore cloud, RxDB on the local box |
 | [`ksef`](https://github.com/timerise-ai/ksef) | 1.2.5 | KSeF API 2.0 integration for Poland's mandatory e-invoicing: token auth, invoice encryption, interactive and batch sending, UPO receipts, purchase-invoice sync, QR codes | Postgres (Neon/Supabase) on Vercel |
 | [`ledger-wallet`](https://github.com/timerise-ai/ledger-wallet) | 0.1.1 | Customer wallet as an append-only ledger with a balance per currency: Stripe Checkout top-ups, orders paid from the wallet, by card or split between them, a hold on the balance part until the card pays, refunds to source, staff adjustments with a reason, every movement keyed by a ref so a retry replays | Firestore or Postgres behind a store seam, one conformance suite for both |
@@ -85,6 +86,7 @@ for skill in \
   ecommerce-process-mining \
   help-center-markdown \
   in-app-bug-reports \
+  invoicing \
   island-mode-server \
   ksef \
   ledger-wallet \
@@ -109,13 +111,13 @@ multilingual", "charge a deposit when a guest doesn't show", "add a walk-up kios
 the site taking bookings when the internet drops", "hide the staging site behind a PIN until launch", "add a
 report-a-bug button whose reports land in GitHub Issues", "tell me when the customer opens the proposal link",
 "let the team ask our Slack bot about a booking", "get data out of a site that has no API", "write down how
-the back office really handles returns", "why is this invoice rejected with a 430", "let customers top up a
-balance and pay with it", "why is the connected account never funded", "fix the skill based on its last
-evals". It can also be invoked explicitly with its slash command (`/ad-campaign-runbook`, `/blog-markdown`,
-`/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`, `/digital-signage`,
-`/ecommerce-process-mining`, `/help-center-markdown`, `/in-app-bug-reports`, `/island-mode-server`, `/ksef`,
-`/ledger-wallet`, `/site-pin-gate`, `/skill-eval-loop`, `/slack-ai-bot`, `/stripe-connect-subscriptions`,
-`/visit-logger`).
+the back office really handles returns", "issue a correcting invoice and print it as PDF", "why is this
+invoice rejected with a 430", "let customers top up a balance and pay with it", "why is the connected account
+never funded", "fix the skill based on its last evals". It can also be invoked explicitly with its slash
+command (`/ad-campaign-runbook`, `/blog-markdown`, `/bookable-events`, `/booking-kiosk`,
+`/browser-extension-connector`, `/digital-signage`, `/ecommerce-process-mining`, `/help-center-markdown`,
+`/in-app-bug-reports`, `/invoicing`, `/island-mode-server`, `/ksef`, `/ledger-wallet`, `/site-pin-gate`,
+`/skill-eval-loop`, `/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
 rather than assuming it fired. The **non-negotiables** each skill names are where models diverge most, so
