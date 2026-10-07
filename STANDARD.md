@@ -333,12 +333,12 @@ It wired the gate in proxy.ts and passed every check, but left the robots header
 - `runUrl`, only on a run made by the workflow, links the GitHub Actions run that holds the agent's log.
 - `skillVersion` is the newest section of the installed `CHANGELOG.md`. `agentVersion` is what the agent's
   `--version` prints, without the agent's name. `model` is the model the session reports it used, and
-  `reasoningEffort` the effort it reports, when the agent reports one; a value that was only requested and
+  `reasoningEffort` the effort it reports, when the agent reports one; a model that was only requested and
   never confirmed by the agent is written as requested.
 - **The model is chosen, not inherited.** Each agent is started on a named model, the same one for every
-  skill, so results compare across skills and releases: Claude Code with `--model`, Codex CLI with `-m` and
-  `-c model_reasoning_effort="<effort>"`, Gemini CLI with `-m`. A CLI's default changes under you between
-  versions and can be a low-effort setting. Moving to a new model is a decision recorded in the index
+  skill, so results compare across skills and releases: Claude Code with `--model`, Codex CLI and Gemini
+  CLI with `-m`. The reasoning effort is the model's own default and is not set. A CLI's default model
+  changes under you between versions. Moving to a new model is a decision recorded in the index
   changelog, and the next release of each skill runs on it.
 - The frontmatter is what was measured and is not edited after the run. The body is written by the person
   who ran it, after reading the whole session: the concrete gaps, such as a non-negotiable the agent broke, a
@@ -357,7 +357,7 @@ skill holds no secret and runs only on a published release or a maintainer's dis
 copies it verbatim from item 2 and never edits it or adds a trigger.
 
 1. **One harness, in this index.** `eval/run.mjs` takes `--skill-dir`, `--agent`, `--prompt`,
-   `--timeout`, `--model` and `--reasoning`, does steps 1 to 7 with the agent in headless mode, and writes
+   `--timeout` and `--model`, does steps 1 to 7 with the agent in headless mode, and writes
    the result file into the skill's `evals/`. `.github/workflows/agent-eval.yml` is a reusable workflow
    (`on: workflow_call`, inputs `agent` and `prompt`) that checks out the calling skill and this index,
    installs Node 22, the harness and the one agent under test, runs the harness, uploads the agent's full
@@ -401,9 +401,9 @@ copies it verbatim from item 2 and never edits it or adds a trigger.
        secrets: inherit
    ```
 
-3. **Models as organization variables**: `EVAL_MODEL_CLAUDE_CODE`, `EVAL_MODEL_CODEX`,
-   `EVAL_MODEL_GEMINI_CLI`, and `EVAL_REASONING_CODEX` for the Codex effort. The workflow passes the ones for
-   the agent under test as `EVAL_MODEL` and `EVAL_REASONING`, and the harness hands them to the CLI. An unset
+3. **Models as organization variables**: `EVAL_MODEL_CLAUDE_CODE`, `EVAL_MODEL_CODEX` and
+   `EVAL_MODEL_GEMINI_CLI`. The workflow passes the one for the agent under test as `EVAL_MODEL`, and the
+   harness hands it to the CLI. An unset
    variable leaves the CLI's default, which the result then records as whatever the agent reports.
 4. **Keys as organization secrets**: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, visible to the
    public skill repositories. The reusable workflow skips an agent whose key is missing with a notice

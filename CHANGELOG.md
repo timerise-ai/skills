@@ -5,6 +5,21 @@ All notable changes to this repository are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Eval models
+
+From 2026-10-07, Codex CLI evals run on `gpt-6.1-sol` with its default
+settings, in place of `gpt-6-astra` at reasoning effort high. Claude Code and
+Gemini CLI are unchanged. The next release of each skill runs on it.
+
+### Removed
+
+- The harness's `--reasoning` option and the workflow's `EVAL_REASONING`
+  environment variable, read from the organization variable
+  `EVAL_REASONING_CODEX`. Every agent runs at its model's default reasoning
+  effort; the effort Codex reports is still recorded.
+
 ## [0.16.0] - 2026-09-27
 
 Agent evals: each skill release is now run through Claude Code, Codex CLI and

@@ -38,7 +38,7 @@ No external services are reachable from here: read every credential from environ
 variables and do not require them at build time. When you finish, \`npm run typecheck\` and
 \`npm run build\` must pass, and if the skill ships tests, wire them to \`npm test\` so they run.`;
 
-/** The CLI flags that pin the model (and, for Codex, the reasoning effort); none when unset. */
+/** The CLI flag that pins the model; none when unset. */
 const modelFlag = (flag, opts) => (opts.model ? [flag, opts.model] : []);
 
 /**
@@ -85,7 +85,6 @@ export const AGENTS = {
       "--sandbox",
       "danger-full-access",
       ...modelFlag("-m", opts),
-      ...(opts.reasoning ? ["-c", `model_reasoning_effort="${opts.reasoning}"`] : []),
       prompt,
     ],
     /** Codex prints its settings as a header on stderr: `model: ...`, `reasoning effort: ...`. */
@@ -122,7 +121,6 @@ function parseArgs(argv) {
     dryRun: false,
     log: "",
     model: process.env.EVAL_MODEL ?? "",
-    reasoning: process.env.EVAL_REASONING ?? "",
   };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
@@ -131,7 +129,6 @@ function parseArgs(argv) {
     else if (arg === "--prompt") opts.prompt = Number(argv[++i]);
     else if (arg === "--timeout") opts.timeoutMinutes = Number(argv[++i]);
     else if (arg === "--model") opts.model = argv[++i];
-    else if (arg === "--reasoning") opts.reasoning = argv[++i];
     else if (arg === "--log") opts.log = path.resolve(argv[++i]);
     else if (arg === "--dry-run") opts.dryRun = true;
   }
@@ -232,7 +229,7 @@ async function main() {
   const agent = AGENTS[opts.agent];
   if (!opts.skillDir || !agent) {
     console.error(
-      `Usage: node run.mjs --skill-dir <path> [--agent ${Object.keys(AGENTS).join("|")}] [--prompt n] [--timeout minutes] [--model id] [--reasoning effort] [--log file] [--dry-run]`,
+      `Usage: node run.mjs --skill-dir <path> [--agent ${Object.keys(AGENTS).join("|")}] [--prompt n] [--timeout minutes] [--model id] [--log file] [--dry-run]`,
     );
     process.exit(1);
   }
@@ -351,9 +348,7 @@ async function main() {
     agentVersion,
     // What the agent reports it ran on; the pinned value when it reports nothing.
     model: parsed.model || opts.model || "",
-    ...(parsed.reasoningEffort || opts.reasoning
-      ? { reasoningEffort: parsed.reasoningEffort || opts.reasoning }
-      : {}),
+    ...(parsed.reasoningEffort ? { reasoningEffort: parsed.reasoningEffort } : {}),
     date,
     skillVersion,
     promptIndex: opts.prompt,
