@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-10-07
+
+`in-app-bug-reports` joins the index at its own `0.1.0`.
+
+### Added
+
+- `in-app-bug-reports` in the skills table, the all-skills clone loop, the
+  activation examples and the slash-command list: a report-a-bug module whose
+  reports are saved under the tenant's policies first and filed as GitHub
+  issues through an outbox with marker de-duplication, the issue's state
+  mirrored back as the report's status, `/reply` comments as the only team
+  replies a member sees, attachments kept private behind sign-in, an operator
+  view across tenants with bridge health, and an assistant tool that drafts a
+  report the member sends. Postgres/Supabase with row-level security behind a
+  `BugReportsHost` seam, GitHub behind an `IssueTracker` seam.
+
 ### Eval models
 
 From 2026-10-07, Codex CLI evals run on `gpt-6.1-sol` with its default
