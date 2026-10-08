@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-10-08
+
+`inboxparse` joins the index at its own `0.1.0`.
+
+### Added
+
+- `inboxparse` in the skills table, the all-skills clone loop, the activation
+  examples and the slash-command list: an InboxParse email integration in a
+  Next.js App Router app, with a typed server-only V1 client, a webhook
+  receiver verifying `X-InboxParse-Signature` over the raw body, a scheduled
+  lookback sync that stores every email whether or not a webhook arrived, and
+  replies sent only after a person approves the exact text. Postgres, Supabase
+  or Firestore behind an `InboxStore` seam.
+
 ## [0.19.0] - 2026-10-08
 
 `assistant-knowledge-sync` joins the index at its own `0.1.0`.
