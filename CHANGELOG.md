@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.1] - 2026-10-08
+
+### Changed
+
+- The skills table: `digital-signage` 0.1.12, whose ad routes keep each
+  venue's media library and playlists to that venue, and
+  `help-center-markdown` 0.2.16, whose quick start wires `validate:help`
+  before every build and names what to set before deploying.
+
 ## [0.18.0] - 2026-10-07
 
 `invoicing` joins the index at its own `0.1.2` and `linkedin-boost` at its own
