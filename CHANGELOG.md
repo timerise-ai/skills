@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-10-08
+
+`assistant-knowledge-sync` joins the index at its own `0.1.0`.
+
+### Added
+
+- `assistant-knowledge-sync` in the skills table, the all-skills clone loop,
+  the activation examples and the slash-command list: a site's AI chat
+  assistant kept in step with the site, with a gap audit between pages and
+  assistant, page copy moved into one data module the page and the assistant
+  both read, the knowledge pack and searchable corpus, a site map derived from
+  the sitemap source, routing and never-quote guardrails, and unit tests and
+  regex probes on routes and numbers. No data store; the host's prompt,
+  knowledge, tools and probe modules behind a seam.
+
 ## [0.18.1] - 2026-10-08
 
 ### Changed
