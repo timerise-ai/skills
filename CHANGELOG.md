@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.20.1] - 2026-10-08
+
+### Changed
+
+- The skills table: `assistant-knowledge-sync` 0.1.2, whose unattended run
+  commits nothing and hands over the files of its two commits, keeps a seam
+  the host lacks absent rather than inventing it, and adds the docs line to
+  `README.md` when the host has none.
+
 ## [0.20.0] - 2026-10-08
 
 `inboxparse` joins the index at its own `0.1.0`.
