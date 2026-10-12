@@ -86,3 +86,13 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/ad-campaign-runbook/actions/runs/36425401579
 ---
+
+Rubric 8/8, scored from the final summary, since this log carries no diff. The runbook has the template's nine
+sections and the appendix, the preflight ran on the saved post, and nothing in the host was made into a test. At
+2,000 EUR it plans two campaigns as the budget table says: the cold one with three live ads on the post, and
+retargeting to `/signup` that starts at the week-4 review once its audience reaches 300 members. The 1 to 10
+trials a month follows from the planning assumptions, and the summary says a month with zero is normal. The
+qualified-trial definition is marked for Sales to confirm, the live check is recorded as not done, the two
+author slots are left empty, and destination URLs are paths because the production domain is unknown. Doubt:
+the ad names, UTM values and leftover `{{` could only be read from the summary, which does not quote them. The
+link to the new runbook index in the root `README.md` is an extra that is not scored.

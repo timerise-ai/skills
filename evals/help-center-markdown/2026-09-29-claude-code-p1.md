@@ -23,3 +23,13 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/help-center-markdown/actions/runs/36619282920
 ---
+
+Rubric 6/8. Scored from the summary, with a local rerun of the same version on the same model to read the
+diff. The suite runs as shipped under vitest (4 files, 23 tests), only summaries reach the client, the routes,
+the sitemap merge and the `prebuild` validator follow routes.md, and the handover names the category ids, the
+placeholder articles, the site URL and the analytics hook. Item 2 failed: the summary says the module was
+"adjusted to this repo", and the rerun edited `HelpShell.tsx` to import a stylesheet and `HelpHeader.tsx` to
+add `data-help-desktop` / `data-help-mobile` attributes. The host has no Tailwind, and ui.md says the layout
+utilities "survive any design system" without saying who defines them when there is no Tailwind. Item 6
+failed: it invented `NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_SITE_NAME`. The skill names no variable and never
+says where `siteUrl` comes from when the host has none.

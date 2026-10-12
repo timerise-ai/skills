@@ -86,3 +86,14 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/ad-campaign-runbook/actions/runs/36425401579
 ---
+
+Rubric 5/8, scored from the final summary. Item 4: at 2,000 EUR it funds one campaign, with retargeting not
+mentioned, against the budget table's two. The skill never says how the second campaign starts while the
+retargeting audience is still under 300. Item 6: it defined a qualified trial as an account that "configures
+automatic reminders or connects a calendar within 7 days". The `inputs.md` default is "Sales accepted it", and
+neither the user nor the host gave anything else. It also wrote an "internal SQL baseline query" for an app with
+no data store. Both are invented facts, and the rule that an input not given takes its documented default or is
+listed as open sits only in `inputs.md`. Item 8: the summary says nothing on the live check, and never says
+launch is blocked until the tickets ship. The skill does not say what the handover must contain. The template,
+the five ads with three live, the 0 to 3 range and the empty author slots hold. The post-mortem file it created up
+front is an extra that is not scored.
