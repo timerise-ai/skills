@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `calendar-scheduling-links` 0.1.0: self-hosted scheduling links on Next.js with Supabase or Firestore,
+  in the skills table, the clone loop, the activation examples and the slash-command list.
+
 ## [0.20.1] - 2026-10-08
 
 ### Changed
