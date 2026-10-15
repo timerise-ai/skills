@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.1] - 2026-10-15
+
+### Changed
+
+- The skills table: `calendar-scheduling-links` 0.1.2, through 0.1.1. The
+  host's "new booking" e-mail skips a booking cancelled before its job ran and
+  carries the ICS invite unless the module writes into the host's connected
+  calendar; the widget survives a partial time zone name and a rejected fetch;
+  the store contract compiles in a Supabase app without `firebase-admin`; the
+  reschedule widget lists every time the booking can move to, including times
+  overlapping the booking itself; the vitest config loads as ESM in any app; and
+  the handover names every environment variable, the migration, the cron, the
+  e-mail sender and each OAuth app with its redirect URI.
+
 ## [0.21.0] - 2026-10-15
 
 `calendar-scheduling-links` joins the index at its own `0.1.0`.
