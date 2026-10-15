@@ -7,10 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.21.0] - 2026-10-15
+
+`calendar-scheduling-links` joins the index at its own `0.1.0`.
+
 ### Added
 
-- `calendar-scheduling-links` 0.1.0: self-hosted scheduling links on Next.js with Supabase or Firestore,
-  in the skills table, the clone loop, the activation examples and the slash-command list.
+- `calendar-scheduling-links` in the skills table, the all-skills clone loop,
+  the activation examples and the slash-command list: self-hosted scheduling
+  links in a Next.js App Router app, with a public booking page per host and
+  event type, weekly availability with date overrides, buffers and minimum
+  notice, daily limits and group seats, Google and Microsoft calendar sync,
+  e-mail with an ICS invite, reminders, reschedule and cancel by a private
+  link, signed webhooks and an embed widget. Supabase or Firestore behind a
+  `SchedulingStore` seam.
 
 ## [0.20.1] - 2026-10-08
 
