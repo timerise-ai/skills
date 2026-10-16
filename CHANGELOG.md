@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `microsoft-calendar-sync` 0.1.4 in the skills table, the all-skills clone
+  loop, the activation examples and the slash-command list: two-way Microsoft
+  365 and Outlook calendar sync over Microsoft Graph, with OAuth connect and
+  encrypted tokens, busy time from the calendars a host chooses kept current by
+  change notifications and a renewal cron, and confirmed bookings written as
+  events with Teams links. Firestore or Supabase, in Next.js App Router or
+  Express.
+
 ## [0.22.0] - 2026-10-16
 
 `google-calendar-sync` joins the index at its own `0.2.2`.

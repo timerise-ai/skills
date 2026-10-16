@@ -43,6 +43,7 @@ skills-compatible agent can build on the same parts.
 | [`ksef`](https://github.com/timerise-ai/ksef) | 1.2.5 | KSeF API 2.0 integration for Poland's mandatory e-invoicing: token auth, invoice encryption, interactive and batch sending, UPO receipts, purchase-invoice sync, QR codes | Postgres (Neon/Supabase) on Vercel |
 | [`ledger-wallet`](https://github.com/timerise-ai/ledger-wallet) | 0.1.1 | Customer wallet as an append-only ledger with a balance per currency: Stripe Checkout top-ups, orders paid from the wallet, by card or split between them, a hold on the balance part until the card pays, refunds to source, staff adjustments with a reason, every movement keyed by a ref so a retry replays | Firestore or Postgres behind a store seam, one conformance suite for both |
 | [`linkedin-boost`](https://github.com/timerise-ai/linkedin-boost) | 0.1.3 | Runbook for boosting one LinkedIn Company Page post that promotes a blog post: what a boost buys and what it cannot, a lifetime budget sized to the run, the image, post text and first comment with the link, founder reposts and network DMs, the Campaign Manager build the Boost button hides, a named person on every task, weekly decision rules and a date cascade when the publish date moves | No data store, markdown posts in the repository; people, conversion vocabulary and languages behind a seam |
+| [`microsoft-calendar-sync`](https://github.com/timerise-ai/microsoft-calendar-sync) | 0.1.4 | Two-way Microsoft 365 and Outlook calendar sync over Microsoft Graph: OAuth connect with encrypted tokens, busy time from the calendars a host chooses kept current by change notifications and a renewal cron that replaces lost subscriptions, all-day events anchored to the mailbox time zone, confirmed bookings written as events with Teams links, derived health per calendar, an Express adapter beside the App Router routes | Firestore or Supabase; storage, auth and the booking source behind seams |
 | [`site-pin-gate`](https://github.com/timerise-ai/site-pin-gate) | 0.4.0 | Shared-PIN gate in front of a whole site from the proxy or middleware layer: one env var arms it, an unlock page sets an HMAC cookie, origin-resolved return path, attempt budget answering 429, a bypass list that keeps webhooks and cron working, the host's own locale resolver with right-to-left layout | No data store, one cookie; attempt store, locale resolver and bypass list behind seams |
 | [`skill-eval-loop`](https://github.com/timerise-ai/skill-eval-loop) | 0.1.1 | For skill maintainers: a skill hardened from its automatic agent evals, each run scored against a fixed fidelity rubric read from the agent's log, each deviation fixed at its root cause in the skill, a patch release per round, repeated until every agent scores full | No data store, the target skill's repository and its eval runs via the `gh` CLI |
 | [`slack-ai-bot`](https://github.com/timerise-ai/slack-ai-bot) | 0.1.1 | Two-way Slack AI bot: mentions, DMs and thread follow-ups answered by a model with tools scoped to the asking user, app-initiated reports, Approve and Cancel buttons whose click runs the side effect exactly once, raw-body signature verification, 3-second ack | Backend-agnostic `BotHost` seam, Postgres/Supabase and in-memory stores |
@@ -100,6 +101,7 @@ for skill in \
   ksef \
   ledger-wallet \
   linkedin-boost \
+  microsoft-calendar-sync \
   site-pin-gate \
   skill-eval-loop \
   slack-ai-bot \
@@ -119,18 +121,19 @@ A skill activates automatically when a task matches its description, for example
 search", "write a LinkedIn ads runbook for this post", "boost the company page post and move it to tomorrow",
 "teach the site's chatbot about the new page", "pair a TV to a playlist", "make this markdown blog
 multilingual", "charge a deposit when a guest doesn't show", "give every advisor a Calendly-style booking
-link", "block a stylist's free time with their Google Calendar", "add a walk-up kiosk with counter payment",
-"keep the site taking bookings when the internet drops", "hide the staging site behind a PIN until launch",
-"add a report-a-bug button whose reports land in GitHub Issues", "tell me when the customer opens the proposal
-link", "store every email from the support inbox and draft replies", "let the team ask our Slack bot about a
-booking", "get data out of a site that has no API", "write down how the back office really handles returns",
-"issue a correcting invoice and print it as PDF", "why is this invoice rejected with a 430", "let customers
-top up a balance and pay with it", "why is the connected account never funded", "fix the skill based on its
-last evals". It can also be invoked explicitly with its slash command (`/ad-campaign-runbook`,
-`/assistant-knowledge-sync`, `/blog-markdown`, `/bookable-events`, `/booking-kiosk`,
-`/browser-extension-connector`, `/calendar-scheduling-links`, `/digital-signage`, `/ecommerce-process-mining`,
-`/google-calendar-sync`, `/help-center-markdown`, `/in-app-bug-reports`, `/inboxparse`, `/invoicing`,
-`/island-mode-server`, `/ksef`, `/ledger-wallet`, `/linkedin-boost`, `/site-pin-gate`, `/skill-eval-loop`,
+link", "block a stylist's free time with their Google Calendar", "write bookings into the consultant's Outlook
+calendar with a Teams link", "add a walk-up kiosk with counter payment", "keep the site taking bookings when
+the internet drops", "hide the staging site behind a PIN until launch", "add a report-a-bug button whose
+reports land in GitHub Issues", "tell me when the customer opens the proposal link", "store every email from
+the support inbox and draft replies", "let the team ask our Slack bot about a booking", "get data out of a
+site that has no API", "write down how the back office really handles returns", "issue a correcting invoice
+and print it as PDF", "why is this invoice rejected with a 430", "let customers top up a balance and pay with
+it", "why is the connected account never funded", "fix the skill based on its last evals". It can also be
+invoked explicitly with its slash command (`/ad-campaign-runbook`, `/assistant-knowledge-sync`,
+`/blog-markdown`, `/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`,
+`/calendar-scheduling-links`, `/digital-signage`, `/ecommerce-process-mining`, `/google-calendar-sync`,
+`/help-center-markdown`, `/in-app-bug-reports`, `/inboxparse`, `/invoicing`, `/island-mode-server`, `/ksef`,
+`/ledger-wallet`, `/linkedin-boost`, `/microsoft-calendar-sync`, `/site-pin-gate`, `/skill-eval-loop`,
 `/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
