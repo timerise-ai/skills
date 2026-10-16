@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-10-16
+
+`time-slot-generator` joins the index at its own `0.1.3`.
+
 ### Added
 
 - `time-slot-generator` 0.1.3 in the skills table, the all-skills clone loop,
