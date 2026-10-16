@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `google-calendar-sync` 0.2.2 in the skills table, the all-skills clone loop,
+  the activation examples and the slash-command list: two-way Google Calendar
+  sync for a booking or scheduling app, with OAuth and PKCE, busy time from the
+  calendars a host chooses kept current by push notifications and channel
+  renewal, and confirmed bookings written as events with Google Meet links.
+  Firestore or Supabase, in Next.js App Router or Express.
+
 ## [0.21.1] - 2026-10-15
 
 ### Changed

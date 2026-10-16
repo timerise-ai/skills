@@ -34,6 +34,7 @@ skills-compatible agent can build on the same parts.
 | [`calendar-scheduling-links`](https://github.com/timerise-ai/calendar-scheduling-links) | 0.1.2 | Self-hosted scheduling links: a public booking page per host and event type, weekly availability with date overrides, buffers and minimum notice, daily limits and group seats, Google and Microsoft calendar sync, e-mail with an ICS invite, reminders, reschedule and cancel by a private link, signed webhooks, an embed widget | Supabase or Firestore behind a `SchedulingStore` seam |
 | [`digital-signage`](https://github.com/timerise-ai/digital-signage) | 0.1.12 | In-venue screens: media library, per-screen playlists, device pairing by PIN or URL, fullscreen TV player with stall recovery and health monitoring | Firestore or Supabase |
 | [`ecommerce-process-mining`](https://github.com/timerise-ai/ecommerce-process-mining) | 0.1.2 | Employee process mining for an e-commerce back office: a consented MV3 extension reading DOM events rather than pixels, a gap-capture form, an ingest route that scrubs before it stores, a batch AI pipeline writing per-role SOPs and a ranked automation shortlist | Postgres/Supabase with row-level security, or Firestore |
+| [`google-calendar-sync`](https://github.com/timerise-ai/google-calendar-sync) | 0.2.2 | Two-way Google Calendar sync for a booking or scheduling app: OAuth with PKCE, busy time from the calendars a host chooses kept current by push notifications and make-before-break channel renewal, confirmed bookings written as idempotent events with Google Meet links, derived health per calendar, an Express adapter beside the App Router routes | Firestore or Supabase; storage, auth and the booking source behind seams |
 | [`help-center-markdown`](https://github.com/timerise-ai/help-center-markdown) | 0.2.16 | Markdown-backed help center: category, tag and article pages, ranked client-side search, locale fallback, JSON-LD, sitemap, CI content validator | Repository files, no CMS |
 | [`in-app-bug-reports`](https://github.com/timerise-ai/in-app-bug-reports) | 0.1.0 | In-app bug reports filed as GitHub issues: reports with markdown and attachments saved under tenant policies first and delivered through an outbox with marker de-duplication, the issue's state mirrored back as the report's status, `/reply` comments as the only team replies a member sees, attachments that stay private behind sign-in, an operator view across tenants with bridge health, an assistant tool that drafts a report the member sends | Postgres/Supabase with row-level security behind a `BugReportsHost` seam; GitHub behind an `IssueTracker` seam |
 | [`inboxparse`](https://github.com/timerise-ai/inboxparse) | 0.1.0 | InboxParse email integration: a typed server-only V1 client, a webhook receiver verifying `X-InboxParse-Signature` over the raw body, a scheduled lookback sync that stores every email whether or not a webhook arrived, replies sent only after a person approves the exact text, email content never obeyed as instructions | Postgres, Supabase or Firestore behind an `InboxStore` seam |
@@ -90,6 +91,7 @@ for skill in \
   calendar-scheduling-links \
   digital-signage \
   ecommerce-process-mining \
+  google-calendar-sync \
   help-center-markdown \
   in-app-bug-reports \
   inboxparse \
@@ -117,18 +119,19 @@ A skill activates automatically when a task matches its description, for example
 search", "write a LinkedIn ads runbook for this post", "boost the company page post and move it to tomorrow",
 "teach the site's chatbot about the new page", "pair a TV to a playlist", "make this markdown blog
 multilingual", "charge a deposit when a guest doesn't show", "give every advisor a Calendly-style booking
-link", "add a walk-up kiosk with counter payment", "keep the site taking bookings when the internet drops",
-"hide the staging site behind a PIN until launch", "add a report-a-bug button whose reports land in GitHub
-Issues", "tell me when the customer opens the proposal link", "store every email from the support inbox and
-draft replies", "let the team ask our Slack bot about a booking", "get data out of a site that has no API",
-"write down how the back office really handles returns", "issue a correcting invoice and print it as PDF",
-"why is this invoice rejected with a 430", "let customers top up a balance and pay with it", "why is the
-connected account never funded", "fix the skill based on its last evals". It can also be invoked explicitly
-with its slash command (`/ad-campaign-runbook`, `/assistant-knowledge-sync`, `/blog-markdown`,
-`/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`, `/calendar-scheduling-links`,
-`/digital-signage`, `/ecommerce-process-mining`, `/help-center-markdown`, `/in-app-bug-reports`,
-`/inboxparse`, `/invoicing`, `/island-mode-server`, `/ksef`, `/ledger-wallet`, `/linkedin-boost`,
-`/site-pin-gate`, `/skill-eval-loop`, `/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
+link", "block a stylist's free time with their Google Calendar", "add a walk-up kiosk with counter payment",
+"keep the site taking bookings when the internet drops", "hide the staging site behind a PIN until launch",
+"add a report-a-bug button whose reports land in GitHub Issues", "tell me when the customer opens the proposal
+link", "store every email from the support inbox and draft replies", "let the team ask our Slack bot about a
+booking", "get data out of a site that has no API", "write down how the back office really handles returns",
+"issue a correcting invoice and print it as PDF", "why is this invoice rejected with a 430", "let customers
+top up a balance and pay with it", "why is the connected account never funded", "fix the skill based on its
+last evals". It can also be invoked explicitly with its slash command (`/ad-campaign-runbook`,
+`/assistant-knowledge-sync`, `/blog-markdown`, `/bookable-events`, `/booking-kiosk`,
+`/browser-extension-connector`, `/calendar-scheduling-links`, `/digital-signage`, `/ecommerce-process-mining`,
+`/google-calendar-sync`, `/help-center-markdown`, `/in-app-bug-reports`, `/inboxparse`, `/invoicing`,
+`/island-mode-server`, `/ksef`, `/ledger-wallet`, `/linkedin-boost`, `/site-pin-gate`, `/skill-eval-loop`,
+`/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
 rather than assuming it fired. The **non-negotiables** each skill names are where models diverge most, so
