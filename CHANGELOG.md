@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-10-16
+
+`microsoft-calendar-sync` joins the index at its own `0.1.4`.
+
 ### Added
 
 - `microsoft-calendar-sync` 0.1.4 in the skills table, the all-skills clone
