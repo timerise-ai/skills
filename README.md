@@ -48,6 +48,7 @@ skills-compatible agent can build on the same parts.
 | [`skill-eval-loop`](https://github.com/timerise-ai/skill-eval-loop) | 0.1.1 | For skill maintainers: a skill hardened from its automatic agent evals, each run scored against a fixed fidelity rubric read from the agent's log, each deviation fixed at its root cause in the skill, a patch release per round, repeated until every agent scores full | No data store, the target skill's repository and its eval runs via the `gh` CLI |
 | [`slack-ai-bot`](https://github.com/timerise-ai/slack-ai-bot) | 0.1.1 | Two-way Slack AI bot: mentions, DMs and thread follow-ups answered by a model with tools scoped to the asking user, app-initiated reports, Approve and Cancel buttons whose click runs the side effect exactly once, raw-body signature verification, 3-second ack | Backend-agnostic `BotHost` seam, Postgres/Supabase and in-memory stores |
 | [`stripe-connect-subscriptions`](https://github.com/timerise-ai/stripe-connect-subscriptions) | 0.1.8 | Stripe Connect marketplace settlement and platform subscription billing: split charges, escrow and reserves, account onboarding, off-session billing with dunning, ledger reconciliation | Backend-agnostic store adapter |
+| [`time-slot-generator`](https://github.com/timerise-ai/time-slot-generator) | 0.1.3 | Strategy-driven time-slot generator: daily ranges, Nth-weekday-of-month rules, one-off and whole-day slots authored in local time and stored as UTC, seats, bookings, blackouts, host busy time, shared resources and working hours subtracted, one availability map for listing and booking, capacity re-checked inside the booking transaction, slot IDs that stay stable for existing bookings | Firestore or Supabase/Postgres behind a `SlotStore` seam |
 | [`visit-logger`](https://github.com/timerise-ai/visit-logger) | 0.1.2 | Server-side log of who opened a shared resource, from where and on what: a page-view filter that drops prefetches and Server Actions, bot detection past the framework's list, edge geolocation, NULL-safe repeat-visitor matching, sittings, first-open announcements, admin panels | Postgres/Supabase or Firestore behind a `VisitStore` seam |
 
 The version is each skill's latest release as recorded in its `CHANGELOG.md`; the skill's own repository is
@@ -106,6 +107,7 @@ for skill in \
   skill-eval-loop \
   slack-ai-bot \
   stripe-connect-subscriptions \
+  time-slot-generator \
   visit-logger; do
   git clone "https://github.com/timerise-ai/$skill.git" ~/.claude/skills/"$skill"
 done
@@ -122,19 +124,20 @@ search", "write a LinkedIn ads runbook for this post", "boost the company page p
 "teach the site's chatbot about the new page", "pair a TV to a playlist", "make this markdown blog
 multilingual", "charge a deposit when a guest doesn't show", "give every advisor a Calendly-style booking
 link", "block a stylist's free time with their Google Calendar", "write bookings into the consultant's Outlook
-calendar with a Teams link", "add a walk-up kiosk with counter payment", "keep the site taking bookings when
-the internet drops", "hide the staging site behind a PIN until launch", "add a report-a-bug button whose
-reports land in GitHub Issues", "tell me when the customer opens the proposal link", "store every email from
-the support inbox and draft replies", "let the team ask our Slack bot about a booking", "get data out of a
-site that has no API", "write down how the back office really handles returns", "issue a correcting invoice
-and print it as PDF", "why is this invoice rejected with a 430", "let customers top up a balance and pay with
-it", "why is the connected account never funded", "fix the skill based on its last evals". It can also be
-invoked explicitly with its slash command (`/ad-campaign-runbook`, `/assistant-knowledge-sync`,
-`/blog-markdown`, `/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`,
-`/calendar-scheduling-links`, `/digital-signage`, `/ecommerce-process-mining`, `/google-calendar-sync`,
-`/help-center-markdown`, `/in-app-bug-reports`, `/inboxparse`, `/invoicing`, `/island-mode-server`, `/ksef`,
-`/ledger-wallet`, `/linkedin-boost`, `/microsoft-calendar-sync`, `/site-pin-gate`, `/skill-eval-loop`,
-`/slack-ai-bot`, `/stripe-connect-subscriptions`, `/visit-logger`).
+calendar with a Teams link", "offer class slots every first Monday of the month", "add a walk-up kiosk with
+counter payment", "keep the site taking bookings when the internet drops", "hide the staging site behind a PIN
+until launch", "add a report-a-bug button whose reports land in GitHub Issues", "tell me when the customer
+opens the proposal link", "store every email from the support inbox and draft replies", "let the team ask our
+Slack bot about a booking", "get data out of a site that has no API", "write down how the back office really
+handles returns", "issue a correcting invoice and print it as PDF", "why is this invoice rejected with a 430",
+"let customers top up a balance and pay with it", "why is the connected account never funded", "fix the skill
+based on its last evals". It can also be invoked explicitly with its slash command (`/ad-campaign-runbook`,
+`/assistant-knowledge-sync`, `/blog-markdown`, `/bookable-events`, `/booking-kiosk`,
+`/browser-extension-connector`, `/calendar-scheduling-links`, `/digital-signage`, `/ecommerce-process-mining`,
+`/google-calendar-sync`, `/help-center-markdown`, `/in-app-bug-reports`, `/inboxparse`, `/invoicing`,
+`/island-mode-server`, `/ksef`, `/ledger-wallet`, `/linkedin-boost`, `/microsoft-calendar-sync`,
+`/site-pin-gate`, `/skill-eval-loop`, `/slack-ai-bot`, `/stripe-connect-subscriptions`,
+`/time-slot-generator`, `/visit-logger`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
 rather than assuming it fired. The **non-negotiables** each skill names are where models diverge most, so

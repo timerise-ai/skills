@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `time-slot-generator` 0.1.3 in the skills table, the all-skills clone loop,
+  the activation examples and the slash-command list: a strategy-driven
+  time-slot generator with daily ranges, Nth-weekday-of-month rules, one-off
+  and whole-day slots authored in local time and stored as UTC, with seats,
+  bookings, blackouts, host busy time, shared resources and working hours
+  subtracted and capacity re-checked inside the booking transaction. Next.js
+  App Router on Firestore or Supabase.
+
 ## [0.23.0] - 2026-10-16
 
 `microsoft-calendar-sync` joins the index at its own `0.1.4`.
