@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-10-16
+
+`google-calendar-sync` joins the index at its own `0.2.2`.
+
 ### Added
 
 - `google-calendar-sync` 0.2.2 in the skills table, the all-skills clone loop,
