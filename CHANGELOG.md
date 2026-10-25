@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-10-25
+
+`bumpv` joins the index at its own `0.1.3`.
+
+### Added
+
+- `bumpv` 0.1.3 in the skills table, the all-skills clone loop, the activation
+  examples and the slash-command list: a Semantic Versioning release cut in any
+  git repository, with the bump level decided from the commits since the last
+  tag, the manifest, changelog section and current-release line updated, and a
+  `chore(release)` commit with a verified annotated tag, the push left to the
+  user. Any stack; the repository's own manifest, tag prefix and changelog are
+  the seam.
+
 ## [0.24.1] - 2026-10-25
 
 ### Changed
