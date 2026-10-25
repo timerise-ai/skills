@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.27.0] - 2026-10-25
+
+`syncdocs` joins the index at its own `0.1.2`.
+
+### Added
+
+- `syncdocs` 0.1.2 in the skills table, the all-skills clone loop, the
+  activation examples and the slash-command list: a repository's documentation
+  kept in step with its code, with versions, dependencies, commands, structure
+  and feature claims in README.md, CLAUDE.md, AGENTS.md and docs/ re-read from
+  the manifest, lockfile, scripts and files, prose left alone and unverifiable
+  claims flagged. Any stack; the repository's own manifests and files are the
+  seam.
+
 ## [0.26.0] - 2026-10-25
 
 `commit` joins the index at its own `0.1.1`.
