@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-10-25
+
+`commit` joins the index at its own `0.1.1`.
+
+### Added
+
+- `commit` 0.1.1 in the skills table, the all-skills clone loop, the
+  activation examples and the slash-command list: a git working tree turned
+  into clean Conventional Commits, with the diff read and the repository's own
+  check run first, staging by path, unrelated changes split into separate
+  commits, breaking changes marked for `bumpv`, hooks respected, and a check
+  that no attribution trailer landed. Any stack; the repository's own check and
+  documented conventions are the seam.
+
 ## [0.25.0] - 2026-10-25
 
 `bumpv` joins the index at its own `0.1.3`.
