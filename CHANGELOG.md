@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.27.1] - 2026-10-25
+
+### Changed
+
+- The index cover, `assets/cover.svg` and `assets/cover.png`: the title and the
+  `npx skills add timerise-ai/<skill>` install line beside an index window of
+  generic module tiles, with no skill named or counted, so the cover holds as
+  skills join.
+
 ## [0.27.0] - 2026-10-25
 
 `syncdocs` joins the index at its own `0.1.2`.
