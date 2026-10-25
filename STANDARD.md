@@ -329,7 +329,8 @@ It wired the gate in proxy.ts and passed every check, but left the robots header
   of its own (an API or authentication error, a refusal to start in the folder) before changing anything.
   The cause is fixed and the run repeated. An agent that ran and changed nothing is a result, and a `fail`.
 - `filesChanged` and `linesAdded` are measured when the agent stops, before the checks, so what the build
-  rewrites is not counted as the agent's work.
+  rewrites is not counted as the agent's work. They are measured from the commit that installed the skill,
+  so work the agent committed counts the same as work it left in the tree.
 - `runUrl`, only on a run made by the workflow, links the GitHub Actions run that holds the agent's log.
 - `skillVersion` is the newest section of the installed `CHANGELOG.md`. `agentVersion` is what the agent's
   `--version` prints, without the agent's name. `model` is the model the session reports it used, and

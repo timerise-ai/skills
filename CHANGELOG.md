@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `eval/run.mjs` measured the agent's work against `HEAD`, so an agent that committed its work, as the
+  `commit` skill's agent must, scored `filesChanged: 0` and `result: fail` while every check passed.
+  It now measures from the commit that installed the skill; for an agent that commits nothing, the
+  numbers are unchanged. `STANDARD.md` section 10 says so.
+
 ## [0.24.0] - 2026-10-16
 
 `time-slot-generator` joins the index at its own `0.1.3`.

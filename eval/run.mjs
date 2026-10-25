@@ -285,6 +285,8 @@ async function main() {
   const skillVersion = await versionOf(installed);
   await git(["add", "-A"]);
   await git(["commit", "-qm", "skill"]);
+  // The agent's work is measured from here, so a skill whose agent commits its own work is counted too.
+  const base = (await git(["rev-parse", "HEAD"])).stdout.trim();
 
   if (opts.dryRun) {
     console.log(`Dry run: the app and ${repo} ${skillVersion} are ready in ${dir}.`);
@@ -326,7 +328,7 @@ async function main() {
 
   // Measured when the agent stops, so what the build rewrites is not counted as its work.
   await run("git", ["add", "-A"], { cwd: dir });
-  const diff = shortstat((await run("git", ["diff", "--cached", "--shortstat", "HEAD"], { cwd: dir })).stdout);
+  const diff = shortstat((await run("git", ["diff", "--cached", "--shortstat", base], { cwd: dir })).stdout);
 
   console.log("Checking the result…");
   // A fresh install, in case the agent added packages without installing them.
