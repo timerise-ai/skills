@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.24.1] - 2026-10-25
+
+### Changed
+
+- The skills table: `inboxparse` 0.1.6, through 0.1.1. The email page reads
+  the store alone, so a stored email renders with no key set or with the API
+  unreachable, and the reply form joins it through a `ReplySection` that shows
+  a notice when the mailbox list fails; the suite has 21 tests, 16 without
+  replies; an archive import resumes through the cron with no change to the
+  sync; the quick start says to copy every block as written, keep the memory
+  store and the `InboxStore` interface, and install `server-only` and `vitest`
+  from the registry; and the final message itself names the webhook
+  registration, each environment variable, the first sync call and the off
+  state that applies.
+
 ### Fixed
 
 - `eval/run.mjs` measured the agent's work against `HEAD`, so an agent that committed its work, as the
