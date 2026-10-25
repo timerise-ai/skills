@@ -31,6 +31,7 @@ skills-compatible agent can build on the same parts.
 | [`bookable-events`](https://github.com/timerise-ai/bookable-events) | 0.1.0 | Capacity-limited events with Stripe payments: Checkout tickets, a refundable card hold on free events released on check-in and captured on no-show, staff check-in, refunds, event cancellation, one pure state machine with Stripe called only after commit | Firestore or Postgres behind an `EventStore` seam |
 | [`booking-kiosk`](https://github.com/timerise-ai/booking-kiosk) | 0.1.5 | Self-service touchscreen kiosk: walk-up booking flow, on-screen keyboard, pay-at-counter or pay-by-QR, server-priced idempotent booking API, LAN failover contract | Backend- and payment-agnostic `KioskBackend` seam, Firestore reference implementation |
 | [`browser-extension-connector`](https://github.com/timerise-ai/browser-extension-connector) | 0.1.2 | Chrome MV3 connector for a web service with no usable public API: a MAIN-world tap on the page's own fetch and XHR, auth headers replayed only to their own origin, a bounded offline buffer, one polled endpoint carrying records up and commands down, PIN pairing, diagnostics | Host app behind a two-endpoint contract, the service behind an adapter seam |
+| [`bumpv`](https://github.com/timerise-ai/bumpv) | 0.1.3 | For any repository: a Semantic Versioning release cut from committed history, the bump level decided from the commits since the last tag, the manifest, changelog section and current-release line updated, a `chore(release)` commit and a verified annotated tag that survives `git push --follow-tags`, the push left to the user | No data store, the repository's own manifest, tag prefix and changelog behind a seam |
 | [`calendar-scheduling-links`](https://github.com/timerise-ai/calendar-scheduling-links) | 0.1.2 | Self-hosted scheduling links: a public booking page per host and event type, weekly availability with date overrides, buffers and minimum notice, daily limits and group seats, Google and Microsoft calendar sync, e-mail with an ICS invite, reminders, reschedule and cancel by a private link, signed webhooks, an embed widget | Supabase or Firestore behind a `SchedulingStore` seam |
 | [`digital-signage`](https://github.com/timerise-ai/digital-signage) | 0.1.12 | In-venue screens: media library, per-screen playlists, device pairing by PIN or URL, fullscreen TV player with stall recovery and health monitoring | Firestore or Supabase |
 | [`ecommerce-process-mining`](https://github.com/timerise-ai/ecommerce-process-mining) | 0.1.2 | Employee process mining for an e-commerce back office: a consented MV3 extension reading DOM events rather than pixels, a gap-capture form, an ingest route that scrubs before it stores, a batch AI pipeline writing per-role SOPs and a ranked automation shortlist | Postgres/Supabase with row-level security, or Firestore |
@@ -90,6 +91,7 @@ for skill in \
   bookable-events \
   booking-kiosk \
   browser-extension-connector \
+  bumpv \
   calendar-scheduling-links \
   digital-signage \
   ecommerce-process-mining \
@@ -131,13 +133,13 @@ opens the proposal link", "store every email from the support inbox and draft re
 Slack bot about a booking", "get data out of a site that has no API", "write down how the back office really
 handles returns", "issue a correcting invoice and print it as PDF", "why is this invoice rejected with a 430",
 "let customers top up a balance and pay with it", "why is the connected account never funded", "fix the skill
-based on its last evals". It can also be invoked explicitly with its slash command (`/ad-campaign-runbook`,
-`/assistant-knowledge-sync`, `/blog-markdown`, `/bookable-events`, `/booking-kiosk`,
-`/browser-extension-connector`, `/calendar-scheduling-links`, `/digital-signage`, `/ecommerce-process-mining`,
-`/google-calendar-sync`, `/help-center-markdown`, `/in-app-bug-reports`, `/inboxparse`, `/invoicing`,
-`/island-mode-server`, `/ksef`, `/ledger-wallet`, `/linkedin-boost`, `/microsoft-calendar-sync`,
-`/site-pin-gate`, `/skill-eval-loop`, `/slack-ai-bot`, `/stripe-connect-subscriptions`,
-`/time-slot-generator`, `/visit-logger`).
+based on its last evals", "cut a release and tag it". It can also be invoked explicitly with its slash command
+(`/ad-campaign-runbook`, `/assistant-knowledge-sync`, `/blog-markdown`, `/bookable-events`, `/booking-kiosk`,
+`/browser-extension-connector`, `/bumpv`, `/calendar-scheduling-links`, `/digital-signage`,
+`/ecommerce-process-mining`, `/google-calendar-sync`, `/help-center-markdown`, `/in-app-bug-reports`,
+`/inboxparse`, `/invoicing`, `/island-mode-server`, `/ksef`, `/ledger-wallet`, `/linkedin-boost`,
+`/microsoft-calendar-sync`, `/site-pin-gate`, `/skill-eval-loop`, `/slack-ai-bot`,
+`/stripe-connect-subscriptions`, `/time-slot-generator`, `/visit-logger`).
 
 Each host matches a task against the description its own way, so invoke a skill explicitly on a first run
 rather than assuming it fired. The **non-negotiables** each skill names are where models diverge most, so
