@@ -1,0 +1,31 @@
+---
+agent: gemini-cli
+agentVersion: 0.65.0
+model: gemini-3.8-flash
+date: 2026-10-25
+skillVersion: 0.1.0
+promptIndex: 1
+prompt: "Preview the first release of this app: which version it should be, why,
+  and the release notes you would write. Do not commit or tag anything."
+stack: No data store
+durationMinutes: 3
+turns: null
+interventions: 0
+checks:
+  typecheck: pass
+  build: pass
+  tests: none
+result: pass
+filesChanged: 1
+linesAdded: 29
+isolated: true
+timedOut: false
+runUrl: https://github.com/timerise-ai/bumpv/actions/runs/40198421355
+---
+
+Rubric 8/8. It traced the version source through `version-sources.md` to tag-only, quoted the first-release
+rule for `0.1.0` with the `v` prefix, and listed both commits in the range. It wrote `CHANGELOG.md` with the
+Keep a Changelog preamble and a `## [0.1.0]` section under `Added`, left it uncommitted, and added no
+version field and no test script. The report carries the plan, the commit and tag commands, and the push and
+`gh release create` as the user's. One small slip, not scored: its `gh release create` passes the whole
+`CHANGELOG.md` as notes, not the new section.

@@ -23,3 +23,12 @@ isolated: true
 timedOut: false
 runUrl: https://github.com/timerise-ai/inboxparse/actions/runs/37789757627
 ---
+
+Rubric 6/8, scored from the JSON summary. Checks pass, the webhook route and sync are the skill's, and the
+handover names `setup-webhook.sh`, the one-time secret, `CRON_SECRET` and a first sync run. With no database in
+the app it added `pg`, a Postgres store and a `DATABASE_URL` with an in-memory fallback, and a basic-auth
+`proxy.ts` on `/inbox` with `INBOX_USERNAME` and `INBOX_PASSWORD`: a dependency and three variables the skill
+never names. The skill is silent on a host with no database and on who may view the email pages. It left out
+replies, which the skill allows, but the only email page template carries the reply form, so the page is its own;
+the 17 tests it reports include a login-gate file, so the shipped `drafts.test.ts` was presumably dropped, which
+the skill is also silent on (recorded as doubt).
