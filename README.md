@@ -26,6 +26,7 @@ skills-compatible agent can build on the same parts.
 | Skill | Version | Builds | Backend |
 |---|---|---|---|
 | [`ad-campaign-runbook`](https://github.com/timerise-ai/ad-campaign-runbook) | 0.1.0 | LinkedIn Ads campaign runbook for one blog post: a probe of what the site actually measures, a campaign structure sized by the budget and the platform minimum, ad copy traceable to the post, an organic companion post with author-only slots, UTMs, conversions and click-by-click Campaign Manager steps | No data store, markdown posts in the repository; analytics vendor and consent component behind a seam |
+| [`agent-skills-catalog`](https://github.com/timerise-ai/agent-skills-catalog) | 0.1.3 | Public catalog of Agent Skills on a Next.js site, generated at build time from each skill repository's own files: a sync that reads every file at one commit and swaps the copy in whole, a loader that never fetches, catalog pages with search and a category filter, one page per category and per skill, the newest eval result per agent and prompt with failing runs included, JSON-LD, sitemap entries, a content validator | No data store, files mirrored into the repository; GitHub or local checkouts behind a seam |
 | [`assistant-knowledge-sync`](https://github.com/timerise-ai/assistant-knowledge-sync) | 0.1.2 | Site AI chat assistant kept in step with the site: a gap audit between pages and assistant, page copy moved into one data module the page and the assistant both read, the knowledge pack and searchable corpus, a site map derived from the sitemap source, routing and never-quote guardrails, unit tests and regex probes on routes and numbers | No data store, repository content; the host's prompt, knowledge, tools and probe modules behind a seam |
 | [`blog-markdown`](https://github.com/timerise-ai/blog-markdown) | 0.1.6 | File-based multilingual blog with localized slugs, tag pages, related posts, RSS, sitemap, hreflang and a CI content validator | Repository files, no CMS |
 | [`bookable-events`](https://github.com/timerise-ai/bookable-events) | 0.1.0 | Capacity-limited events with Stripe payments: Checkout tickets, a refundable card hold on free events released on check-in and captured on no-show, staff check-in, refunds, event cancellation, one pure state machine with Stripe called only after commit | Firestore or Postgres behind an `EventStore` seam |
@@ -89,6 +90,7 @@ All of them:
 ```bash
 for skill in \
   ad-campaign-runbook \
+  agent-skills-catalog \
   assistant-knowledge-sync \
   blog-markdown \
   bookable-events \
@@ -140,10 +142,10 @@ Slack bot about a booking", "get data out of a site that has no API", "write dow
 handles returns", "issue a correcting invoice and print it as PDF", "why is this invoice rejected with a 430",
 "let customers top up a balance and pay with it", "why is the connected account never funded", "fix the skill
 based on its last evals", "split these changes into separate commits", "cut a release and tag it", "the README
-still names the old Next.js version", "fix the issue this customer filed and reply to them". It can also be
-invoked explicitly with its slash command
-(`/ad-campaign-runbook`, `/assistant-knowledge-sync`, `/blog-markdown`, `/bookable-events`, `/booking-kiosk`,
-`/browser-extension-connector`, `/bumpv`, `/calendar-scheduling-links`, `/commit`, `/digital-signage`,
+still names the old Next.js version", "fix the issue this customer filed and reply to them", "list our Agent
+Skills on the site with their eval results". It can also be invoked explicitly with its slash command
+(`/ad-campaign-runbook`, `/agent-skills-catalog`, `/assistant-knowledge-sync`, `/blog-markdown`,
+`/bookable-events`, `/booking-kiosk`, `/browser-extension-connector`, `/bumpv`, `/calendar-scheduling-links`, `/commit`, `/digital-signage`,
 `/ecommerce-process-mining`, `/google-calendar-sync`, `/help-center-markdown`, `/in-app-bug-reports`,
 `/inboxparse`, `/invoicing`, `/island-mode-server`, `/ksef`, `/ledger-wallet`, `/linkedin-boost`,
 `/microsoft-calendar-sync`, `/resolve-bug-report`, `/site-pin-gate`, `/skill-eval-loop`, `/slack-ai-bot`,
