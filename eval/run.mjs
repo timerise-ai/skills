@@ -244,6 +244,7 @@ async function main() {
     process.exit(1);
   }
   const stack = typeof entry === "object" ? (entry.stack ?? "") : "";
+  const expectsNoChange = typeof entry === "object" && entry?.changes === "none";
 
   // "2.1.283 (Claude Code)" → "2.1.283": the page already names the agent.
   const agentVersion = (await run(agent.bin, ["--version"])).stdout
@@ -340,9 +341,11 @@ async function main() {
     tests: (await hasTestScript(dir)) ? await outcome(["test"]) : "none",
   };
   const builds = checks.typecheck === "pass" && checks.build === "pass";
-  // An agent that ran and changed nothing built nothing, whatever the untouched fixture passes.
+  // An agent that ran and changed nothing built nothing, whatever the untouched fixture passes,
+  // unless the prompt says (changes: none) that leaving the app as it was is the right outcome.
+  const builtNothing = diff.files === 0 && !expectsNoChange;
   const result =
-    !builds || agentRun.timedOut || diff.files === 0 ? "fail" : checks.tests === "fail" ? "partial" : "pass";
+    !builds || agentRun.timedOut || builtNothing ? "fail" : checks.tests === "fail" ? "partial" : "pass";
 
   const date = new Date().toISOString().slice(0, 10);
   const record = {

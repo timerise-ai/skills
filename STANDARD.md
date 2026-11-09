@@ -264,7 +264,9 @@ reworded: add a new one instead.
 **A skill that builds no code** has prompts and evals like any other. Each prompt names what the skill works
 on and the fixture lacks: a public repository to clone, a public page, a file whose content the prompt
 carries. The checks then only confirm the agent left the app intact, so the result is read from the notes,
-which score the run against the skill's hard rules. The unattended note is the same for every skill, so a
+which score the run against the skill's hard rules. A run that changes no file is otherwise a `fail`, so a
+prompt whose right outcome is an untouched app sets `changes: none` beside `prompt`; the field is not
+rewording and may be added to a prompt that has results. The unattended note is the same for every skill, so a
 skill that needs a public clone or page says in its `SKILL.md` that neither is an external service in the
 note's sense.
 
