@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.0] - 2026-11-09
+
+`resolve-bug-report` joins the index at its own `0.2.1` and `agent-skills-catalog`
+at its own `0.1.3`, and the eval harness accepts a run whose right outcome is an
+untouched app.
+
+### Added
+
+- `resolve-bug-report` 0.2.1 in the skills table, the all-skills clone loop, the
+  activation examples and the slash-command list: one report filed from inside a
+  multi-tenant app taken to a fix and a reply, with the reporter's steps rebuilt
+  from production data read only, the root cause and its siblings fixed, a guard
+  test failing on the old code and passing on the new, and a plain-language reply
+  asking the reporter to confirm. Postgres-backed multi-tenant apps via the `gh`
+  CLI; tracker, reply channel, production access and verify procedure are the seam.
+- `agent-skills-catalog` 0.1.3 in the skills table, the all-skills clone loop, the
+  activation examples and the slash-command list: a public catalog of Agent Skills
+  on a Next.js site, generated at build time from each skill repository's own
+  files, with search, a category filter, one page per category and per skill, and
+  the newest eval result per agent and prompt with failing runs included. No data
+  store; GitHub or local checkouts are the seam.
+- The `changes: none` prompt field in `STANDARD.md`, for a prompt whose right
+  outcome is an untouched app.
+
 ### Fixed
 
 - The eval harness no longer fails a run for changing no file when its prompt sets
