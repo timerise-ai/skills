@@ -276,8 +276,9 @@ note's sense.
    nothing else, to an empty folder outside any repository. Rename `gitignore` to `.gitignore`, run
    `npm install`, then `git init`, `git add -A` and `git commit -m fixture`.
 2. Install the skill the way its README says, for the one agent under test:
-   `npx skills add timerise-ai/<name> -a <agent> -y`. Commit again, so the diff that follows is the agent's
-   alone.
+   `npx skills add timerise-ai/<name> -a <agent> -y`. A private skill, which the CLI cannot clone without a
+   token, is installed the same way from a checkout of its repository: `npx skills add <path> -a <agent> -y`.
+   Commit again, so the diff that follows is the agent's alone.
 3. Start the agent in that folder with a clean profile: no other skills, no personal instructions, no memory.
    Where that is not possible, the result says `isolated: false`.
 4. Paste the prompt verbatim, then this note, verbatim:
@@ -360,8 +361,9 @@ skill holds no secret and runs only on a published release or a maintainer's dis
 copies it verbatim from item 2 and never edits it or adds a trigger.
 
 1. **One harness, in this index.** `eval/run.mjs` takes `--skill-dir`, `--agent`, `--prompt`,
-   `--timeout` and `--model`, does steps 1 to 7 with the agent in headless mode, and writes
-   the result file into the skill's `evals/`. `.github/workflows/agent-eval.yml` is a reusable workflow
+   `--timeout`, `--model` and `--from-dir` (install from `--skill-dir`, for a private skill; the workflow
+   passes it when the calling repository is private), does steps 1 to 7 with the agent in headless mode,
+   and writes the result file into the skill's `evals/`. `.github/workflows/agent-eval.yml` is a reusable workflow
    (`on: workflow_call`, inputs `agent` and `prompt`) that checks out the calling skill and this index,
    installs Node 22, the harness and the one agent under test, runs the harness, uploads the agent's full
    log as an artifact and commits the result. The headless forms are `claude -p "<prompt>"

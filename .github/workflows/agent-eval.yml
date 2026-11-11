@@ -104,9 +104,12 @@ jobs:
           TIMEOUT: ${{ inputs.timeout-minutes }}
           # The model each agent runs on, pinned per agent by organization variables; unset is the CLI default.
           EVAL_MODEL: "${{ inputs.agent == 'claude-code' && vars.EVAL_MODEL_CLAUDE_CODE || inputs.agent == 'codex' && vars.EVAL_MODEL_CODEX || inputs.agent == 'gemini-cli' && vars.EVAL_MODEL_GEMINI_CLI || '' }}"
+          # A private skill cannot be cloned by the skills CLI without a token, and the agent's
+          # environment keeps none, so it is installed from the checkout above (main, as GitHub would).
+          FROM_DIR: ${{ github.event.repository.private && '--from-dir' || '' }}
         run: |
           node harness/eval/run.mjs --skill-dir skill --agent "$AGENT" --prompt "$PROMPT" \
-            --timeout "$TIMEOUT" --log "$RUNNER_TEMP/agent.log"
+            --timeout "$TIMEOUT" --log "$RUNNER_TEMP/agent.log" $FROM_DIR
 
       - name: Keep the agent's log
         if: always() && steps.key.outputs.skip != 'true'

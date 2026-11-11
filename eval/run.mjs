@@ -6,6 +6,7 @@
  *   node run.mjs --skill-dir ../site-pin-gate                 # Claude Code, prompt 1
  *   node run.mjs --skill-dir ../ksef --agent codex --prompt 2
  *   node run.mjs --skill-dir ../ksef --dry-run                # set up the app, skip the agent
+ *   node run.mjs --skill-dir ../ksef --from-dir               # install from --skill-dir, not GitHub
  *
  * Steps: copy fixture/ (a fresh Next.js App Router app) to a temp folder, npm
  * install, install the skill with the skills CLI exactly as its README tells
@@ -13,6 +14,10 @@
  * typecheck, build and (if the agent left one) the test script. The result is
  * written to <skill>/evals/<date>-<agent>-p<n>.md. In CI the workflow commits
  * it; run by hand, read the agent's log and commit it yourself.
+ *
+ * A private skill cannot be cloned without a token, and the agent must never
+ * get one, so --from-dir installs it from the --skill-dir checkout instead,
+ * with the same CLI and flags.
  *
  * The agent runs with every permission granted, in the temp folder. In CI that
  * is a throwaway runner; locally, run it where you would let an agent run
@@ -119,6 +124,7 @@ function parseArgs(argv) {
     prompt: 1,
     timeoutMinutes: 60,
     dryRun: false,
+    fromDir: false,
     log: "",
     model: process.env.EVAL_MODEL ?? "",
   };
@@ -131,6 +137,7 @@ function parseArgs(argv) {
     else if (arg === "--model") opts.model = argv[++i];
     else if (arg === "--log") opts.log = path.resolve(argv[++i]);
     else if (arg === "--dry-run") opts.dryRun = true;
+    else if (arg === "--from-dir") opts.fromDir = true;
   }
   return opts;
 }
@@ -229,7 +236,7 @@ async function main() {
   const agent = AGENTS[opts.agent];
   if (!opts.skillDir || !agent) {
     console.error(
-      `Usage: node run.mjs --skill-dir <path> [--agent ${Object.keys(AGENTS).join("|")}] [--prompt n] [--timeout minutes] [--model id] [--log file] [--dry-run]`,
+      `Usage: node run.mjs --skill-dir <path> [--agent ${Object.keys(AGENTS).join("|")}] [--prompt n] [--timeout minutes] [--model id] [--log file] [--from-dir] [--dry-run]`,
     );
     process.exit(1);
   }
@@ -271,13 +278,9 @@ async function main() {
   await git(["add", "-A"]);
   await git(["commit", "-qm", "fixture"]);
 
-  console.log(`Installing timerise-ai/${repo} for ${opts.agent}…`);
-  await must(
-    "skills add",
-    "npx",
-    ["-y", "skills", "add", `timerise-ai/${repo}`, "-a", opts.agent, "-y", "--copy"],
-    { cwd: dir },
-  );
+  const source = opts.fromDir ? opts.skillDir : `timerise-ai/${repo}`;
+  console.log(`Installing ${source} for ${opts.agent}…`);
+  await must("skills add", "npx", ["-y", "skills", "add", source, "-a", opts.agent, "-y", "--copy"], { cwd: dir });
   const installed = await findInstalledSkill(dir, repo);
   if (!installed) {
     console.error(`The skills CLI did not leave ${repo}/SKILL.md in an agent folder.`);
