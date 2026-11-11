@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.1] - 2026-11-11
+
+### Fixed
+
+- The agent eval of a private skill no longer fails at install. The skills CLI
+  cannot clone a private repository without a token, and the eval checkout keeps
+  none, so the harness takes `--from-dir` to install from the skill's checkout and
+  the workflow passes it when the calling repository is private. `STANDARD.md`
+  describes the private install in step 2 of the run.
+
 ## [0.28.0] - 2026-11-09
 
 `resolve-bug-report` joins the index at its own `0.2.1` and `agent-skills-catalog`
